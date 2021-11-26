@@ -4,8 +4,8 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 
 First npm install and after npm start
 
-## Available Scripts
-this uses 
+## Dependencies
+this uses several packages
   - react-table
   - styled-components
   - formik
