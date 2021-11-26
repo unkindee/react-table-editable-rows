@@ -1,0 +1,162 @@
+[
+  {
+      "id": 1,
+      "item_description": "Land",
+      "cost_type": "Land Cost",
+      "value_no_vat": "10,000,000",
+      "executed_amount": "945,234",
+      "country": "Argentina"
+  },
+  {
+      "id": 2,
+      "item_description": "Land",
+      "cost_type": "Soft Cost",
+      "value_no_vat": "10,000,00",
+      "executed_amount": "945,234",
+      "country": "Greece"
+  },
+  {
+      "id": 3,
+      "item_description": "Land",
+      "cost_type": "Soft Cost",
+      "value_no_vat": "10,000,0",
+      "executed_amount": "945,234",
+      "country": "Czech Republic"
+  },
+  {
+      "id": 4,
+      "item_description": "Land",
+      "cost_type": "Soft Cost",
+      "value_no_vat": "10,000,",
+      "executed_amount": "945,234",
+      "country": "Equatorial Guinea"
+  },
+  {
+      "id": 5,
+      "item_description": "Land",
+      "cost_type": "Soft Cost",
+      "value_no_vat": "10,000",
+      "executed_amount": "945,234",
+      "country": "Russia"
+  },
+  {
+      "id": 6,
+      "item_description": "Land",
+      "cost_type": "Soft Cost",
+      "value_no_vat": "10,000,0",
+      "executed_amount": "945,234",
+      "country": "Ethiopia"
+  },
+  {
+      "id": 7,
+      "item_description": "Land",
+      "cost_type": "Soft Cost",
+      "value_no_vat": "10,000,000",
+      "executed_amount": "945,234",
+      "country": "Indonesia"
+  },
+  {
+      "id": 8,
+      "item_description": "Land",
+      "cost_type": "Soft Cost",
+      "value_no_vat": "13,400",
+      "executed_amount": "945,234",
+      "country": "Ukraine"
+  },
+  {
+      "id": 9,
+      "item_description": "Land",
+      "cost_type": "Soft Cost",
+      "value_no_vat": "13,400",
+      "executed_amount": "945,234",
+      "country": "United Arab Emirates"
+  },
+  {
+      "id": 10,
+      "item_description": "Land",
+      "cost_type": "Soft Cost",
+      "value_no_vat": "13,400",
+      "executed_amount": "945,234",
+      "country": "Ukraine"
+  },
+  {
+      "id": 11,
+      "item_description": "Land",
+      "cost_type": "Soft Cost",
+      "value_no_vat": "13,400",
+      "executed_amount": "945,234",
+      "country": "Indonesia"
+  },
+  {
+      "id": 12,
+      "item_description": "Land",
+      "cost_type": "Soft Cost",
+      "value_no_vat": "13,400",
+      "executed_amount": "945,234",
+      "country": "Philippines"
+  },
+  {
+      "id": 13,
+      "item_description": "Land",
+      "cost_type": "Soft Cost",
+      "value_no_vat": "13,400",
+      "executed_amount": "945,234",
+      "country": "Philippines"
+  },
+  {
+      "id": 14,
+      "item_description": "Land",
+      "cost_type": "Soft Cost",
+      "value_no_vat": "13,400",
+      "executed_amount": "945,234",
+      "country": "Russia"
+  },
+  {
+      "id": 15,
+      "item_description": "Land",
+      "cost_type": "Soft Cost",
+      "value_no_vat": "13,400",
+      "executed_amount": "945,234",
+      "country": "Philippines"
+  },
+  {
+      "id": 16,
+      "item_description": "Land",
+      "cost_type": "Soft Cost",
+      "value_no_vat": "13,400",
+      "executed_amount": "945,234",
+      "country": "Palestinian Territory"
+  },
+  {
+      "id": 17,
+      "item_description": "Land",
+      "cost_type": "Soft Cost",
+      "value_no_vat": "13,400",
+      "executed_amount": "945,234",
+      "country": "Indonesia"
+  },
+  {
+      "id": 18,
+      "item_description": "Land",
+      "cost_type": "Soft Cost",
+      "value_no_vat": "13,400",
+      "executed_amount": "945,234",
+      "country": "Russia"
+  },
+  {
+      "id": 19,
+      "item_description": "Land",
+      "cost_type": "Soft Cost",
+      "value_no_vat": "13,400",
+      "executed_amount": "945,234",
+      "country": "France"
+  },
+  {
+      "id": 20,
+      "item_description": "Land",
+      "cost_type": "Soft Cost",
+      "value_no_vat": "13,400",
+      "executed_amount": "945,234",
+      "country": "Cuba"
+  }
+]
