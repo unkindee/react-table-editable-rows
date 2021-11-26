@@ -9,3 +9,4 @@ this uses several packages
   - react-table
   - styled-components
   - formik
+  - lodash
