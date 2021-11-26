@@ -37,6 +37,7 @@ const Styles = styled.div`
 `
 
 const App = () => {
+  console.log('test')
   const TABLE_COLUMNS = [
     {
       Header: 'id',
