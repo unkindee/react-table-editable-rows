@@ -4,40 +4,7 @@ import CustomTable from './components/CustomTable.js'
 import { TABLE_ACTIONS } from './components/constants'
 import { CustomInput } from './components/CustomInput'
 
-const Styles = styled.div`
-  padding: 1rem;
-
-  table {
-    border-spacing: 0;
-    border: 1px solid black;
-
-    tr {
-      &.active {
-        background: lightgray;
-      }
-      :last-child {
-        td {
-          border-bottom: 0;
-        }
-      }
-    }
-
-    th,
-    td {
-      margin: 0;
-      padding: 0.5rem;
-      border-bottom: 1px solid black;
-      border-right: 1px solid black;
-
-      :last-child {
-        border-right: 0;
-      }
-    }
-  }
-`
-
 const App = () => {
-  console.log('test')
   const TABLE_COLUMNS = [
     {
       Header: 'id',
@@ -90,13 +57,12 @@ const App = () => {
     },
   ]
   return (
-    <Styles>
-      <CustomTable
-        cols={TABLE_COLUMNS}
-        data={MOCK_TABLE_DATA}
-        show_actions={[TABLE_ACTIONS.edit, TABLE_ACTIONS.delete]}
-      />
-    </Styles>
+    <CustomTable
+      cols={TABLE_COLUMNS}
+      data={MOCK_TABLE_DATA}
+      show_actions={[TABLE_ACTIONS.edit, TABLE_ACTIONS.delete]}
+      size='1.5fr 2.5fr 2.5fr 2fr 2fr 2fr 1.5fr'
+    />
   )
 }
 
