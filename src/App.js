@@ -2,62 +2,61 @@ import MOCK_TABLE_DATA from './MOCK_TABLE_DATA.json'
 import styled from 'styled-components'
 import CustomTable from './components/CustomTable.js'
 import { TABLE_ACTIONS } from './components/constants'
-import { CustomInput } from './components/CustomInput'
 
 const App = () => {
   const TABLE_COLUMNS = [
     {
       Header: 'id',
       accessor: 'id',
+      Cell: tableProps => {
+        const index = Number(tableProps.row.id) + 1
+        return <span>{index}</span>
+      }
     },
     {
       Header: 'Item description',
       accessor: 'item_description',
-
-      Cell: (tableProps) => {
-        const { activeRow, value } = tableProps
-        return <CustomInput value={value} disabled={activeRow} type="text" />
-      }
+      component: 'input',
+      componentType: 'text',
+      componentPlaceholder: 'Click to edit this line'
     },
     {
       Header: 'Cost Type',
       accessor: 'cost_type',
-
-      Cell: (tableProps) => {
-        const { activeRow, value } = tableProps
-        return <CustomInput value={value} disabled={activeRow} type="text" />
-      }
+      component: 'select',
+      componentPlaceholder: 'No selection',
+      selectOptions: [
+        { id: 'soft', title: 'Soft Cost' },
+        { id: 'land', title: 'Land Cost' },
+        { id: 'hard', title: "Hard Cost" },
+      ],
     },
     {
       Header: 'Value without VAT',
       accessor: 'value_no_vat',
-
-      Cell: (tableProps) => {
-        const { activeRow, value } = tableProps
-        return <CustomInput value={value} disabled={activeRow} type="text" />
-      }
+      component: 'input',
+      componentType: 'number',
+      componentPrefix: '$ ',
+      componentPlaceholder: 'Click to edit this line'
     },
     {
-      Header: 'Executed budget',
-      accessor: 'executed_amount',
-
-      Cell: (tableProps) => {
-        const { activeRow, value } = tableProps
-        return <CustomInput value={value} disabled={activeRow} type="text" />
-      }
+      Header: 'Email',
+      accessor: 'email',
+      component: 'input',
+      componentType: 'email',
+      componentPlaceholder: 'Email address'
     },
     {
       Header: 'Country',
       accessor: 'country',
-
-      Cell: (tableProps) => {
-        const { activeRow, value } = tableProps
-        return <CustomInput value={value} disabled={activeRow} type="text" />
-      }
+      component: 'input',
+      componentType: 'text',
+      componentPlaceholder: 'Click to edit this line'
     },
   ]
   return (
     <CustomTable
+      table_key="my_table"
       cols={TABLE_COLUMNS}
       data={MOCK_TABLE_DATA}
       show_actions={[TABLE_ACTIONS.edit, TABLE_ACTIONS.delete]}
