@@ -10,3 +10,5 @@ this uses several packages
   - styled-components
   - formik
   - lodash
+
+![react-table](https://user-images.githubusercontent.com/20815213/143881863-d69ec21b-e7ab-40b7-8712-05fe4a72b037.gif)
