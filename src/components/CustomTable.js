@@ -91,7 +91,26 @@ const TableWrapper = styled.div`
   }
 `
 
-const usePrevious = (value) => {
+export const createNewRow = (data, cols) => {
+  let newState = [...data]
+  const newCount = (newState.length + 1)
+
+  let firstObj = Object.assign({}, newState[0])
+
+  if (Object.keys(firstObj).length < 1) {
+    const arr = cols.map(el => el.accessor)
+    const emptyArr = Array(cols.length).fill('')
+    firstObj = Object.assign(...arr.map((v, i) => ({ [v]: emptyArr[i] })))
+  }
+
+  Object.keys(firstObj).forEach((i) => i === 'id' ? firstObj[i] = newCount : firstObj[i] = '')
+  const item = { 'newRow': '', ...firstObj }
+  newState.push(item)
+
+  return newState
+}
+
+export const usePrevious = (value) => {
   const ref = useRef()
   useEffect(() => {
     ref.current = value
@@ -376,7 +395,9 @@ const CustomTable = ({
   size,
   table_key
 }) => {
-  const [activeRowId, setActiveRowId] = useState(null)
+  const externalNewRow = data.find((obj) => obj.newRow === "")
+  //check and if external newRow exists set it active
+  const [activeRowId, setActiveRowId] = useState(externalNewRow ? (externalNewRow.id - 1) : null)
 
   //revert row changes
   const formikRef = useRef()
@@ -401,31 +422,10 @@ const CustomTable = ({
 
   //add new table row
   const [tableRows, setTableRows] = useState(data)
-  const startCounter = Object.keys(data).length
-  const [count, setCount] = useState(startCounter + 1)
-
-  const onAddNewRow = () => {
-    let newState = [...data]
-    setCount(count + 1)
-
-    let firstObj = Object.assign({}, newState[0])
-
-    if (Object.keys(firstObj).length < 1) {
-      const arr = cols.map(el => el.accessor)
-      const emptyArr = Array(cols.length).fill("")
-      firstObj = Object.assign(...arr.map((v, i) => ({ [v]: emptyArr[i] })))
-    }
-
-    Object.keys(firstObj).forEach((i) => i === 'id' ? firstObj[i] = count : firstObj[i] = '')
-    const item = { "newRow": "", ...firstObj }
-    newState.push(item)
-
-    setTableRows(newState)
-    setActiveRowId(firstObj.id - 1)
+  const addRow = (data) => {
+    setTableRows(data)
+    setActiveRowId(data.length -1)
   }
-
-  //keep add row button disabled after a new row is added and not submitted
-  const addNewRowStatus = usePrevious(data.length) !== usePrevious(tableRows?.length)
 
   const {
     getTableProps,
@@ -442,10 +442,10 @@ const CustomTable = ({
   return (
     <TableWrapper>
       <button
-        onClick={() => onAddNewRow()}
-        disabled={activeRowId !== null || addNewRowStatus}
+        onClick={() => addRow(createNewRow(data, cols))}
+        disabled={(usePrevious(data.length) !== usePrevious(tableRows?.length)) || externalNewRow}
       >
-          Add new line
+        Add new line
       </button>
       <ol className='table table-container' {...getTableProps()}>
         {headerGroups.map((headerGroup, i) => (

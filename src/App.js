@@ -1,6 +1,7 @@
+import React, { useState } from 'react'
 import MOCK_TABLE_DATA from './MOCK_TABLE_DATA.json'
 import styled from 'styled-components'
-import CustomTable from './components/CustomTable.js'
+import CustomTable, { createNewRow, usePrevious } from './components/CustomTable.js'
 import { TABLE_ACTIONS } from './components/constants'
 
 const App = () => {
@@ -54,20 +55,25 @@ const App = () => {
       componentPlaceholder: 'Click to edit this line'
     },
   ]
+
+  const [ data, setTableData ] = useState(null)
+
   return (
     <>
-    <button
-      onClick={() => {}}
-    >
-      Add row external
-    </button>
-    <CustomTable
-      table_key="my_table"
-      cols={TABLE_COLUMNS}
-      data={MOCK_TABLE_DATA}
-      show_actions={[TABLE_ACTIONS.edit, TABLE_ACTIONS.delete]}
-      size='1.5fr 2.5fr 2.5fr 2fr 2fr 2fr 1.5fr'
-    />
+      <button
+        onClick={() => setTableData(createNewRow(MOCK_TABLE_DATA, TABLE_COLUMNS))}
+        disabled={usePrevious(MOCK_TABLE_DATA.length) !== usePrevious(data?.length)}
+      >
+        Add row external
+      </button>
+      <CustomTable
+        table_key="my_table"
+        cols={TABLE_COLUMNS}
+        data={data || MOCK_TABLE_DATA}
+        show_actions={[TABLE_ACTIONS.edit, TABLE_ACTIONS.delete]}
+        size='1.5fr 2.5fr 2.5fr 2fr 2fr 2fr 1.5fr'
+        key={data}
+      />
     </>
   )
 }
