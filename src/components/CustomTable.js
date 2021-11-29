@@ -127,7 +127,7 @@ const TableWrapper = styled.div`
 
   .header-format,
   .cell-format {
-    padding: 16px;
+    padding: 12px;
   }
 `
 
