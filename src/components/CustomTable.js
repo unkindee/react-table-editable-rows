@@ -21,7 +21,37 @@ const TableWrapper = styled.div`
     list-style: none;
     font-size: 12px;
     position: relative;
-    border: 1px solid transparent;
+  }
+
+  * {
+      box-sizing: border-box;
+  }
+
+  .attribute {
+    line-height: 2;
+  }
+
+  /* 2 Column Card Layout */
+  @media screen and (max-width: 736px) {
+
+    /* Don't display the first item, since it is used to display the header for tabular layouts*/
+    .table-container>li:first-child {
+      display: none;
+    }
+
+    /* Attribute name for first column, and attribute value for second column. */
+    .attribute {
+      display: grid;
+      grid-template-columns: minmax(9em, 30%) 1fr;
+    }
+  }
+
+  /* 1 Column Card Layout */
+  @media screen and (max-width:580px) {
+    .table-container {
+      display: grid;
+      grid-template-columns: 1fr;
+    }
   }
 
   /* Tabular Layout */
@@ -39,44 +69,55 @@ const TableWrapper = styled.div`
 
     /* In order to maximize row lines, only display one line for a cell */
     .attribute {
-      border-right: 1px solid #F0F2F3;
-      border-bottom: 1px solid #F0F2F3;
+        border-right: 1px solid #F0F2F3;
+        border-bottom: 1px solid #F0F2F3;
     }
 
     /* Center header labels */
-    .table-container > .item-container:first-child .attribute {
-      display: flex;
-      align-items: center;
-      justify-content: flex-start;
-      text-overflow: initial;
-      overflow: auto;
-      white-space: normal;
+    .table-container>.item-container:first-child .attribute {
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+        text-overflow: initial;
+        overflow: auto;
+        white-space: normal;
     }
   }
 
   form {
     width: 100%;
+  }
 
-    input {
+  input {
+    border: none;
+    background: transparent;
+    width: 100%;
+    height: 25px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text-align: left;
+
+    &:focus {
       border: none;
-      color: black;
-    
-      &:focus-visible {
-        outline: none;
-      }
+    }
+  
+    &:focus-visible {
+      outline: none;
+    }
+
+    &::placeholder {
+      color: #2081FA;
     }
   }
 
-  .attribute {
-    display: flex;
-  }
-
-  .active-table-row {
-    border: 1px solid #2081FA;
-
-    .cell-format:hover {
-      background: lightgray;
-    }
+  .active-row-selection {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    border: 2px solid #2081FA;
   }
 
   .header-format {
@@ -87,7 +128,6 @@ const TableWrapper = styled.div`
   .header-format,
   .cell-format {
     padding: 16px;
-    position: relative;
   }
 `
 
@@ -118,7 +158,7 @@ export const usePrevious = (value) => {
   return ref.current
 }
 
-const ActionItem = styled.div`
+const ActionItem = styled.button`
   cursor: pointer;
 
   &:hover {
@@ -146,7 +186,6 @@ const customSelect = {
     maxWidth: state.selectProps.maxWidth,
     padding: '0',
     maxHeight: '24px',
-    paddingLeft: '12px'
   }),
   control: (provided, state) => ({
     ...provided,
@@ -166,11 +205,9 @@ const customSelect = {
     ...provided,
     fontSize: '12px',
     color: '#515058',
-    paddingLeft: '12px'
   }),
   placeholder: (provided, state) => ({
     ...provided,
-    paddingLeft: '12px'
   }),
   menu: (provided, state) => ({
     ...provided,
@@ -468,6 +505,9 @@ const CustomTable = ({
               className={activeRow ? 'active-table-row' : ''}
               {...row.getRowProps()}
             >
+              {activeRow && (
+                <div className="active-row-selection"></div>
+              )}
               <Formik
                 id='custom-table-form'
                 innerRef={formikRef}
@@ -482,7 +522,11 @@ const CustomTable = ({
                   style={{ gridTemplateColumns: size }}
                 >
                   {row.cells.map(cell => (
-                    <div className='attribute cell-format' {...cell.getCellProps()}>{cell.render('Cell', { disabled: activeRow })}</div>
+                    <div className='attribute cell-format' {...cell.getCellProps()}>
+                      <div style= {{ position: 'relative '}}>
+                        {cell.render('Cell', { disabled: activeRow })}
+                      </div>
+                    </div>
                   ))}
                 </Form>
               </Formik>
