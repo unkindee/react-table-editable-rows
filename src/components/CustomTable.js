@@ -91,6 +91,14 @@ const TableWrapper = styled.div`
   }
 `
 
+const usePrevious = (value) => {
+  const ref = useRef()
+  useEffect(() => {
+    ref.current = value
+  })
+  return ref.current
+}
+
 const ActionItem = styled.div`
   cursor: pointer;
 
@@ -391,6 +399,34 @@ const CustomTable = ({
   const showActions = show_actions && show_actions.length > 0
   const columns = useMemo(() => cols.concat(showActions ? actionsColumn : []), [cols, actionsColumn, showActions])
 
+  //add new table row
+  const [tableRows, setTableRows] = useState(data)
+  const startCounter = Object.keys(data).length
+  const [count, setCount] = useState(startCounter + 1)
+
+  const onAddNewRow = () => {
+    let newState = [...data]
+    setCount(count + 1)
+
+    let firstObj = Object.assign({}, newState[0])
+
+    if (Object.keys(firstObj).length < 1) {
+      const arr = cols.map(el => el.accessor)
+      const emptyArr = Array(cols.length).fill("")
+      firstObj = Object.assign(...arr.map((v, i) => ({ [v]: emptyArr[i] })))
+    }
+
+    Object.keys(firstObj).forEach((i) => i === 'id' ? firstObj[i] = count : firstObj[i] = '')
+    const item = { "newRow": "", ...firstObj }
+    newState.push(item)
+
+    setTableRows(newState)
+    setActiveRowId(firstObj.id - 1)
+  }
+
+  //keep add row button disabled after a new row is added and not submitted
+  const addNewRowStatus = usePrevious(data.length) !== usePrevious(tableRows?.length)
+
   const {
     getTableProps,
     headerGroups,
@@ -398,13 +434,19 @@ const CustomTable = ({
     prepareRow,
   } = useTable({
     columns,
-    data,
+    data: tableRows,
     defaultColumn
   })
 
   // Render the UI for your table
   return (
     <TableWrapper>
+      <button
+        onClick={() => onAddNewRow()}
+        disabled={activeRowId !== null || addNewRowStatus}
+      >
+          Add new line
+      </button>
       <ol className='table table-container' {...getTableProps()}>
         {headerGroups.map((headerGroup, i) => (
           <li className='item item-container' {...headerGroup.getHeaderGroupProps()} style={{ gridTemplateColumns: size }}>

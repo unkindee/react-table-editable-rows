@@ -55,6 +55,12 @@ const App = () => {
     },
   ]
   return (
+    <>
+    <button
+      onClick={() => {}}
+    >
+      Add row external
+    </button>
     <CustomTable
       table_key="my_table"
       cols={TABLE_COLUMNS}
@@ -62,6 +68,7 @@ const App = () => {
       show_actions={[TABLE_ACTIONS.edit, TABLE_ACTIONS.delete]}
       size='1.5fr 2.5fr 2.5fr 2fr 2fr 2fr 1.5fr'
     />
+    </>
   )
 }
 
