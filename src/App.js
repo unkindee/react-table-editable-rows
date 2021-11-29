@@ -67,12 +67,12 @@ const App = () => {
         Add row external
       </button>
       <CustomTable
+        key={data}
         table_key="my_table"
         cols={TABLE_COLUMNS}
         data={data || MOCK_TABLE_DATA}
         show_actions={[TABLE_ACTIONS.edit, TABLE_ACTIONS.delete]}
         size='1.5fr 2.5fr 2.5fr 2fr 2fr 2fr 1.5fr'
-        key={data}
       />
     </>
   )

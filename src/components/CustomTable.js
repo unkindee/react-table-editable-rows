@@ -281,7 +281,7 @@ const Input = (props) => {
     number: ""
   }
 
-  if(type === 'number') {
+  if (type === 'number') {
     return (
       <NumberFormat
         prefix={valuePrefix}
@@ -380,7 +380,7 @@ export const rowActions = (
                   setActiveRowId(null)
                 }}
               >
-                  cancel
+                cancel
               </ActionItem>
             </>
           ) : (
@@ -461,7 +461,7 @@ const CustomTable = ({
   const [tableRows, setTableRows] = useState(data)
   const addRow = (data) => {
     setTableRows(data)
-    setActiveRowId(data.length -1)
+    setActiveRowId(data.length - 1)
   }
 
   const {
@@ -523,7 +523,7 @@ const CustomTable = ({
                 >
                   {row.cells.map(cell => (
                     <div className='attribute cell-format' {...cell.getCellProps()}>
-                      <div style= {{ position: 'relative '}}>
+                      <div style={{ position: 'relative ' }}>
                         {cell.render('Cell', { disabled: activeRow })}
                       </div>
                     </div>
