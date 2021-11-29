@@ -91,6 +91,33 @@ const TableWrapper = styled.div`
   }
 `
 
+export const createNewRow = (data, cols) => {
+  let newState = [...data]
+  const newCount = (newState.length + 1)
+
+  let firstObj = Object.assign({}, newState[0])
+
+  if (Object.keys(firstObj).length < 1) {
+    const arr = cols.map(el => el.accessor)
+    const emptyArr = Array(cols.length).fill('')
+    firstObj = Object.assign(...arr.map((v, i) => ({ [v]: emptyArr[i] })))
+  }
+
+  Object.keys(firstObj).forEach((i) => i === 'id' ? firstObj[i] = newCount : firstObj[i] = '')
+  const item = { 'newRow': '', ...firstObj }
+  newState.push(item)
+
+  return newState
+}
+
+export const usePrevious = (value) => {
+  const ref = useRef()
+  useEffect(() => {
+    ref.current = value
+  })
+  return ref.current
+}
+
 const ActionItem = styled.div`
   cursor: pointer;
 
@@ -368,7 +395,9 @@ const CustomTable = ({
   size,
   table_key
 }) => {
-  const [activeRowId, setActiveRowId] = useState(null)
+  const externalNewRow = data.find((obj) => obj.newRow === "")
+  //check and if external newRow exists set it active
+  const [activeRowId, setActiveRowId] = useState(externalNewRow ? (externalNewRow.id - 1) : null)
 
   //revert row changes
   const formikRef = useRef()
@@ -391,6 +420,13 @@ const CustomTable = ({
   const showActions = show_actions && show_actions.length > 0
   const columns = useMemo(() => cols.concat(showActions ? actionsColumn : []), [cols, actionsColumn, showActions])
 
+  //add new table row
+  const [tableRows, setTableRows] = useState(data)
+  const addRow = (data) => {
+    setTableRows(data)
+    setActiveRowId(data.length -1)
+  }
+
   const {
     getTableProps,
     headerGroups,
@@ -398,13 +434,19 @@ const CustomTable = ({
     prepareRow,
   } = useTable({
     columns,
-    data,
+    data: tableRows,
     defaultColumn
   })
 
   // Render the UI for your table
   return (
     <TableWrapper>
+      <button
+        onClick={() => addRow(createNewRow(data, cols))}
+        disabled={(usePrevious(data.length) !== usePrevious(tableRows?.length)) || externalNewRow}
+      >
+        Add new line
+      </button>
       <ol className='table table-container' {...getTableProps()}>
         {headerGroups.map((headerGroup, i) => (
           <li className='item item-container' {...headerGroup.getHeaderGroupProps()} style={{ gridTemplateColumns: size }}>
