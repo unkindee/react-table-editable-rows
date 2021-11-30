@@ -2,11 +2,16 @@ import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import styled from 'styled-components'
 import { isObject } from 'lodash'
 import { Formik, Form, useField, useFormikContext } from 'formik'
+import { Pagination } from 'react-bootstrap'
 import Select from 'react-select'
 import NumberFormat from 'react-number-format'
-import { useTable } from 'react-table'
+import { useTable, useSortBy, usePagination, useGlobalFilter } from 'react-table'
 import { TABLE_ACTIONS } from './constants'
 import { checkItem } from './helpers'
+
+import { ReactComponent as Sort } from '../assets/icons/sort.svg'
+import { ReactComponent as SortUp } from '../assets/icons/sort_up.svg'
+import { ReactComponent as SortDown } from '../assets/icons/sort_down.svg'
 
 const TableWrapper = styled.div`
   margin: 40px;
@@ -21,7 +26,37 @@ const TableWrapper = styled.div`
     list-style: none;
     font-size: 12px;
     position: relative;
-    border: 1px solid transparent;
+  }
+
+  * {
+      box-sizing: border-box;
+  }
+
+  .attribute {
+    line-height: 2;
+  }
+
+  /* 2 Column Card Layout */
+  @media screen and (max-width: 736px) {
+
+    /* Don't display the first item, since it is used to display the header for tabular layouts*/
+    .table-container>li:first-child {
+      display: none;
+    }
+
+    /* Attribute name for first column, and attribute value for second column. */
+    .attribute {
+      display: grid;
+      grid-template-columns: minmax(9em, 30%) 1fr;
+    }
+  }
+
+  /* 1 Column Card Layout */
+  @media screen and (max-width:580px) {
+    .table-container {
+      display: grid;
+      grid-template-columns: 1fr;
+    }
   }
 
   /* Tabular Layout */
@@ -39,57 +74,115 @@ const TableWrapper = styled.div`
 
     /* In order to maximize row lines, only display one line for a cell */
     .attribute {
-      border-right: 1px solid #F0F2F3;
-      border-bottom: 1px solid #F0F2F3;
+        border-right: 1px solid #F0F2F3;
+        border-bottom: 1px solid #F0F2F3;
     }
 
     /* Center header labels */
-    .table-container > .item-container:first-child .attribute {
-      display: flex;
-      align-items: center;
-      justify-content: flex-start;
-      text-overflow: initial;
-      overflow: auto;
-      white-space: normal;
+    .table-container>.item-container:first-child .attribute {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        text-overflow: initial;
+        overflow: auto;
+        white-space: normal;
     }
   }
 
   form {
     width: 100%;
+  }
 
-    input {
+  input {
+    border: none;
+    background: transparent;
+    width: 100%;
+    height: 25px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text-align: left;
+
+    &:focus {
       border: none;
-      color: black;
-    
-      &:focus-visible {
-        outline: none;
-      }
+    }
+  
+    &:focus-visible {
+      outline: none;
+    }
+
+    &::placeholder {
+      color: #2081FA;
     }
   }
 
-  .attribute {
-    display: flex;
-  }
-
-  .active-table-row {
-    border: 1px solid #2081FA;
-
-    .cell-format:hover {
-      background: lightgray;
-    }
+  .active-row-selection {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    border: 2px solid #2081FA;
   }
 
   .header-format {
     position: relative;
     font-weight: bold;
+
+    span {
+      display: flex;
+    }
   }
 
   .header-format,
   .cell-format {
-    padding: 16px;
-    position: relative;
+    padding: 12px;
+  }
+
+  .pagination {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+
+    .pagination-rows-per-page {
+      margin-right: 150px;
+      font-size: 12px;
+      opacity: .5;
+
+      select {
+        border: none;
+      }
+    }
+
+    .page-link {
+      span {
+        color: #6c757d;
+        background-color: #fff;
+        border-color: #dee2e6;
+        cursor: pointer;
+        margin: 0 10px;
+      }
+
+      .visually-hidden {
+        display: none;
+      }
+    }
+
+    .pagination-count-items {
+      font-size: 12px;
+      opacity: .5;
+    }
+  }
+
+  .columns-filter {
+    display: flex;
+
+    input {
+      height: 15px;
+    }
   }
 `
+const pageIntervals = [30]
 
 export const createNewRow = (data, cols) => {
   let newState = [...data]
@@ -118,7 +211,7 @@ export const usePrevious = (value) => {
   return ref.current
 }
 
-const ActionItem = styled.div`
+const ActionItem = styled.button`
   cursor: pointer;
 
   &:hover {
@@ -146,7 +239,6 @@ const customSelect = {
     maxWidth: state.selectProps.maxWidth,
     padding: '0',
     maxHeight: '24px',
-    paddingLeft: '12px'
   }),
   control: (provided, state) => ({
     ...provided,
@@ -166,11 +258,9 @@ const customSelect = {
     ...provided,
     fontSize: '12px',
     color: '#515058',
-    paddingLeft: '12px'
   }),
   placeholder: (provided, state) => ({
     ...provided,
-    paddingLeft: '12px'
   }),
   menu: (provided, state) => ({
     ...provided,
@@ -192,12 +282,12 @@ const StyledInput = styled.input``
 const CustomSelect = (props) => {
   const selectRef = useRef()
   const { setFieldValue } = useFormikContext()
-  const { customOptions, initialValue, placeholder } = props
+  const { accessor, customOptions, initialValue, placeholder } = props
 
   const options = customOptions
 
   const onChange = option => {
-    setFieldValue('type', option?.id)
+    setFieldValue(`data.${accessor}`, option?.id)
     setSelectedOption([option])
   }
 
@@ -244,7 +334,7 @@ const Input = (props) => {
     number: ""
   }
 
-  if(type === 'number') {
+  if (type === 'number') {
     return (
       <NumberFormat
         prefix={valuePrefix}
@@ -286,6 +376,7 @@ const EditableCell = ({
       return (
         <CustomSelect
           name="select"
+          accessor={id}
           customOptions={props.cell.column.selectOptions}
           placeholder={componentPlaceholder}
           isDisabled={!disabled}
@@ -315,6 +406,19 @@ const defaultColumn = {
   Cell: EditableCell,
 }
 
+const IndeterminateCheckbox = React.forwardRef(
+  ({ indeterminate, ...rest }, ref) => {
+    const defaultRef = React.useRef()
+    const resolvedRef = ref || defaultRef
+
+    React.useEffect(() => {
+      resolvedRef.current.indeterminate = indeterminate
+    }, [resolvedRef, indeterminate])
+
+    return <input type="checkbox" ref={resolvedRef} {...rest} />
+  }
+)
+
 export const rowActions = (
   _data,
   show_actions,
@@ -336,14 +440,14 @@ export const rowActions = (
         <>
           {originalId === activeRowId ? (
             <>
-              <button type="submit">submit</button>
+              <ActionItem type="submit">submit</ActionItem>
               <ActionItem
                 onMouseDown={() => {
                   revertRowChanges()
                   setActiveRowId(null)
                 }}
               >
-                  cancel
+                cancel
               </ActionItem>
             </>
           ) : (
@@ -393,7 +497,11 @@ const CustomTable = ({
   data,
   show_actions,
   size,
-  table_key
+  table_key,
+  updateMyData,
+  skipPageReset,
+  searchFilter,
+  showPagination
 }) => {
   const externalNewRow = data.find((obj) => obj.newRow === "")
   //check and if external newRow exists set it active
@@ -424,23 +532,72 @@ const CustomTable = ({
   const [tableRows, setTableRows] = useState(data)
   const addRow = (data) => {
     setTableRows(data)
-    setActiveRowId(data.length -1)
+    setActiveRowId(data.length - 1)
   }
 
   const {
     getTableProps,
     headerGroups,
     rows,
+    page,
+    nextPage,
+    previousPage,
+    canPreviousPage,
+    canNextPage,
+    state,
+    gotoPage,
+    pageCount,
+    setPageSize,
     prepareRow,
+    allColumns,
+    setGlobalFilter,
+    getToggleHideAllColumnsProps,
   } = useTable({
     columns,
     data: tableRows,
-    defaultColumn
-  })
+    initialState: {
+      pageIndex: 0,
+      pageSize: 30,
+    },
+    defaultColumn,
+    autoResetPage: !skipPageReset,
+    updateMyData,
+  },
+    useGlobalFilter,
+    useSortBy,
+    usePagination
+  )
+
+  //pagination logic
+  const { pageIndex, pageSize } = state
+  let rowsCount = ((pageIndex + 1) * pageSize) - (pageSize - 1) + " - " + (pageIndex + 1) * pageSize
+  if (pageCount - 1 === pageIndex) {
+    rowsCount = ((pageIndex + 1) * pageSize) - (pageSize - 1) + " - " + rows.length
+  }
+
+  //global search filter
+  useEffect(() => {
+    setGlobalFilter(searchFilter)
+  }, [setGlobalFilter, searchFilter])
 
   // Render the UI for your table
   return (
     <TableWrapper>
+      <div className="columns-filter">
+        <div>
+          <IndeterminateCheckbox {...getToggleHideAllColumnsProps()} />
+          Toggle All
+        </div>
+        {allColumns.map(column => (
+            <div key={column.id}>
+              <label>
+                <input type="checkbox" {...column.getToggleHiddenProps()} />{' '}
+                {column.Header}
+              </label>
+            </div>
+          ))}
+      </div>
+
       <button
         onClick={() => addRow(createNewRow(data, cols))}
         disabled={(usePrevious(data.length) !== usePrevious(tableRows?.length)) || externalNewRow}
@@ -451,14 +608,23 @@ const CustomTable = ({
         {headerGroups.map((headerGroup, i) => (
           <li className='item item-container' {...headerGroup.getHeaderGroupProps()} style={{ gridTemplateColumns: size }}>
             {headerGroup.headers.map((column, i) => (
-              <div key={i} className='attribute header-format' {...column.getHeaderProps}>
-                {column.render('Header')}
+              <div key={i} className='attribute header-format' {...column.getHeaderProps(column.getSortByToggleProps())}>
+                <span>{column.render('Header')}</span>
+                {!column.disableSortBy && (
+                  <span>
+                    {column.isSorted
+                      ? column.isSortedDesc
+                        ? <SortDown />
+                        : <SortUp />
+                      : <Sort />}
+                  </span>
+                )}
               </div>
             ))}
           </li>
         ))}
 
-        {rows.map(row => {
+        {page.map(row => {
           prepareRow(row)
           const activeRow = parseInt(row.index) === parseInt(activeRowId)
 
@@ -468,6 +634,9 @@ const CustomTable = ({
               className={activeRow ? 'active-table-row' : ''}
               {...row.getRowProps()}
             >
+              {activeRow && (
+                <div className="active-row-selection"></div>
+              )}
               <Formik
                 id='custom-table-form'
                 innerRef={formikRef}
@@ -482,7 +651,11 @@ const CustomTable = ({
                   style={{ gridTemplateColumns: size }}
                 >
                   {row.cells.map(cell => (
-                    <div className='attribute cell-format' {...cell.getCellProps()}>{cell.render('Cell', { disabled: activeRow })}</div>
+                    <div className='attribute cell-format' {...cell.getCellProps()}>
+                      <div style={{ position: 'relative ' }}>
+                        {cell.render('Cell', { disabled: activeRow })}
+                      </div>
+                    </div>
                   ))}
                 </Form>
               </Formik>
@@ -490,6 +663,30 @@ const CustomTable = ({
           )
         })}
       </ol>
+
+      {showPagination && (
+        <Pagination>
+          <li className="pagination-rows-per-page">
+            Rows per page
+            <select
+              value={pageSize}
+              onChange={e => setPageSize(Number(e.target.value))}>
+              {pageIntervals.map(pageSize => (
+                <option key={pageSize} value={pageSize}>
+                  {pageSize}
+                </option>
+              ))}
+            </select>
+          </li>
+          <Pagination.First onClick={() => gotoPage(0)} disabled={!canPreviousPage} />
+          <Pagination.Prev onClick={() => previousPage()} disabled={!canPreviousPage} />
+          <li className="pagination-count-items">
+            {rowsCount} of {rows.length} items
+          </li>
+          <Pagination.Next onClick={() => nextPage()} disabled={!canNextPage} />
+          <Pagination.Last onClick={() => gotoPage(pageCount - 1)} disabled={!canNextPage} />
+        </Pagination>
+      )}
     </TableWrapper>
   )
 }

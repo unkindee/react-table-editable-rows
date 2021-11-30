@@ -9,6 +9,7 @@ const App = () => {
     {
       Header: 'id',
       accessor: 'id',
+
       Cell: tableProps => {
         const index = Number(tableProps.row.id) + 1
         return <span>{index}</span>
@@ -56,7 +57,11 @@ const App = () => {
     },
   ]
 
+  //user for external add new row
   const [ data, setTableData ] = useState(null)
+
+  //used for external search filter
+  const [searchFilter, setSearchFilter] = useState('')
 
   return (
     <>
@@ -66,13 +71,25 @@ const App = () => {
       >
         Add row external
       </button>
+      <input
+        type='text'
+        id='title'
+        required
+        placeholder='Search'
+        value={searchFilter || ''}
+        onChange={e => {
+          setSearchFilter(e.target.value)
+        }}
+      />
       <CustomTable
-        table_key="my_table"
+        key={data}
+        table_key='my_table'
         cols={TABLE_COLUMNS}
         data={data || MOCK_TABLE_DATA}
         show_actions={[TABLE_ACTIONS.edit, TABLE_ACTIONS.delete]}
-        size='1.5fr 2.5fr 2.5fr 2fr 2fr 2fr 1.5fr'
-        key={data}
+        size='.8fr 2.5fr 2.5fr 2fr 2fr 2fr 2.5fr'
+        searchFilter={searchFilter}
+        showPagination
       />
     </>
   )
