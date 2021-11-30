@@ -57,7 +57,11 @@ const App = () => {
     },
   ]
 
+  //user for external add new row
   const [ data, setTableData ] = useState(null)
+
+  //used for external search filter
+  const [searchFilter, setSearchFilter] = useState('')
 
   return (
     <>
@@ -67,13 +71,24 @@ const App = () => {
       >
         Add row external
       </button>
+      <input
+        type='text'
+        id='title'
+        required
+        placeholder='Search'
+        value={searchFilter || ''}
+        onChange={e => {
+          setSearchFilter(e.target.value)
+        }}
+      />
       <CustomTable
         key={data}
-        table_key="my_table"
+        table_key='my_table'
         cols={TABLE_COLUMNS}
         data={data || MOCK_TABLE_DATA}
         show_actions={[TABLE_ACTIONS.edit, TABLE_ACTIONS.delete]}
         size='.7fr 2.5fr 2.5fr 2fr 2fr 2fr 2.5fr'
+        searchFilter={searchFilter}
         showPagination
       />
     </>

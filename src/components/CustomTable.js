@@ -174,7 +174,7 @@ const TableWrapper = styled.div`
     }
   }
 `
-const pageIntervals = [5, 10, 20]
+const pageIntervals = [30]
 
 export const createNewRow = (data, cols) => {
   let newState = [...data]
@@ -479,6 +479,7 @@ const CustomTable = ({
   table_key,
   updateMyData,
   skipPageReset,
+  searchFilter,
   showPagination
 }) => {
   const externalNewRow = data.find((obj) => obj.newRow === "")
@@ -527,12 +528,13 @@ const CustomTable = ({
     pageCount,
     setPageSize,
     prepareRow,
+    setGlobalFilter
   } = useTable({
     columns,
     data: tableRows,
     initialState: {
       pageIndex: 0,
-      pageSize: 5,
+      pageSize: 30,
     },
     defaultColumn,
     autoResetPage: !skipPageReset,
@@ -549,6 +551,11 @@ const CustomTable = ({
   if (pageCount - 1 === pageIndex) {
     rowsCount = ((pageIndex + 1) * pageSize) - (pageSize - 1) + " - " + rows.length
   }
+
+  //global search filter
+  useEffect(() => {
+    setGlobalFilter(searchFilter)
+  }, [setGlobalFilter, searchFilter])
 
   // Render the UI for your table
   return (
