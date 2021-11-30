@@ -173,6 +173,14 @@ const TableWrapper = styled.div`
       opacity: .5;
     }
   }
+
+  .columns-filter {
+    display: flex;
+
+    input {
+      height: 15px;
+    }
+  }
 `
 const pageIntervals = [30]
 
@@ -398,6 +406,19 @@ const defaultColumn = {
   Cell: EditableCell,
 }
 
+const IndeterminateCheckbox = React.forwardRef(
+  ({ indeterminate, ...rest }, ref) => {
+    const defaultRef = React.useRef()
+    const resolvedRef = ref || defaultRef
+
+    React.useEffect(() => {
+      resolvedRef.current.indeterminate = indeterminate
+    }, [resolvedRef, indeterminate])
+
+    return <input type="checkbox" ref={resolvedRef} {...rest} />
+  }
+)
+
 export const rowActions = (
   _data,
   show_actions,
@@ -528,7 +549,9 @@ const CustomTable = ({
     pageCount,
     setPageSize,
     prepareRow,
-    setGlobalFilter
+    allColumns,
+    setGlobalFilter,
+    getToggleHideAllColumnsProps,
   } = useTable({
     columns,
     data: tableRows,
@@ -560,6 +583,21 @@ const CustomTable = ({
   // Render the UI for your table
   return (
     <TableWrapper>
+      <div className="columns-filter">
+        <div>
+          <IndeterminateCheckbox {...getToggleHideAllColumnsProps()} />
+          Toggle All
+        </div>
+        {allColumns.map(column => (
+            <div key={column.id}>
+              <label>
+                <input type="checkbox" {...column.getToggleHiddenProps()} />{' '}
+                {column.Header}
+              </label>
+            </div>
+          ))}
+      </div>
+
       <button
         onClick={() => addRow(createNewRow(data, cols))}
         disabled={(usePrevious(data.length) !== usePrevious(tableRows?.length)) || externalNewRow}

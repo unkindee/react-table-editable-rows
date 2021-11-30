@@ -87,7 +87,7 @@ const App = () => {
         cols={TABLE_COLUMNS}
         data={data || MOCK_TABLE_DATA}
         show_actions={[TABLE_ACTIONS.edit, TABLE_ACTIONS.delete]}
-        size='.7fr 2.5fr 2.5fr 2fr 2fr 2fr 2.5fr'
+        size='.8fr 2.5fr 2.5fr 2fr 2fr 2fr 2.5fr'
         searchFilter={searchFilter}
         showPagination
       />
