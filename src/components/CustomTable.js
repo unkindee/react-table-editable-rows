@@ -229,12 +229,12 @@ const StyledInput = styled.input``
 const CustomSelect = (props) => {
   const selectRef = useRef()
   const { setFieldValue } = useFormikContext()
-  const { customOptions, initialValue, placeholder } = props
+  const { accessor, customOptions, initialValue, placeholder } = props
 
   const options = customOptions
 
   const onChange = option => {
-    setFieldValue('type', option?.id)
+    setFieldValue(`data.${accessor}`, option?.id)
     setSelectedOption([option])
   }
 
@@ -323,6 +323,7 @@ const EditableCell = ({
       return (
         <CustomSelect
           name="select"
+          accessor={id}
           customOptions={props.cell.column.selectOptions}
           placeholder={componentPlaceholder}
           isDisabled={!disabled}
@@ -373,7 +374,7 @@ export const rowActions = (
         <>
           {originalId === activeRowId ? (
             <>
-              <button type="submit">submit</button>
+              <ActionItem type="submit">submit</ActionItem>
               <ActionItem
                 onMouseDown={() => {
                   revertRowChanges()
