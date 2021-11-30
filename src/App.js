@@ -74,6 +74,7 @@ const App = () => {
         data={data || MOCK_TABLE_DATA}
         show_actions={[TABLE_ACTIONS.edit, TABLE_ACTIONS.delete]}
         size='.7fr 2.5fr 2.5fr 2fr 2fr 2fr 2.5fr'
+        showPagination
       />
     </>
   )

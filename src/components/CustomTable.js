@@ -2,9 +2,10 @@ import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import styled from 'styled-components'
 import { isObject } from 'lodash'
 import { Formik, Form, useField, useFormikContext } from 'formik'
+import { Pagination } from 'react-bootstrap'
 import Select from 'react-select'
 import NumberFormat from 'react-number-format'
-import { useTable, useSortBy } from 'react-table'
+import { useTable, useSortBy, usePagination, useGlobalFilter } from 'react-table'
 import { TABLE_ACTIONS } from './constants'
 import { checkItem } from './helpers'
 
@@ -137,7 +138,43 @@ const TableWrapper = styled.div`
   .cell-format {
     padding: 12px;
   }
+
+  .pagination {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+
+    .pagination-rows-per-page {
+      margin-right: 150px;
+      font-size: 12px;
+      opacity: .5;
+
+      select {
+        border: none;
+      }
+    }
+
+    .page-link {
+      span {
+        color: #6c757d;
+        background-color: #fff;
+        border-color: #dee2e6;
+        cursor: pointer;
+        margin: 0 10px;
+      }
+
+      .visually-hidden {
+        display: none;
+      }
+    }
+
+    .pagination-count-items {
+      font-size: 12px;
+      opacity: .5;
+    }
+  }
 `
+const pageIntervals = [5, 10, 20]
 
 export const createNewRow = (data, cols) => {
   let newState = [...data]
@@ -439,7 +476,10 @@ const CustomTable = ({
   data,
   show_actions,
   size,
-  table_key
+  table_key,
+  updateMyData,
+  skipPageReset,
+  showPagination
 }) => {
   const externalNewRow = data.find((obj) => obj.newRow === "")
   //check and if external newRow exists set it active
@@ -477,14 +517,38 @@ const CustomTable = ({
     getTableProps,
     headerGroups,
     rows,
+    page,
+    nextPage,
+    previousPage,
+    canPreviousPage,
+    canNextPage,
+    state,
+    gotoPage,
+    pageCount,
+    setPageSize,
     prepareRow,
   } = useTable({
     columns,
     data: tableRows,
-    defaultColumn
+    initialState: {
+      pageIndex: 0,
+      pageSize: 5,
+    },
+    defaultColumn,
+    autoResetPage: !skipPageReset,
+    updateMyData,
   },
-    useSortBy
+    useGlobalFilter,
+    useSortBy,
+    usePagination
   )
+
+  //pagination logic
+  const { pageIndex, pageSize } = state
+  let rowsCount = ((pageIndex + 1) * pageSize) - (pageSize - 1) + " - " + (pageIndex + 1) * pageSize
+  if (pageCount - 1 === pageIndex) {
+    rowsCount = ((pageIndex + 1) * pageSize) - (pageSize - 1) + " - " + rows.length
+  }
 
   // Render the UI for your table
   return (
@@ -515,7 +579,7 @@ const CustomTable = ({
           </li>
         ))}
 
-        {rows.map(row => {
+        {page.map(row => {
           prepareRow(row)
           const activeRow = parseInt(row.index) === parseInt(activeRowId)
 
@@ -554,6 +618,30 @@ const CustomTable = ({
           )
         })}
       </ol>
+
+      {showPagination && (
+        <Pagination>
+          <li className="pagination-rows-per-page">
+            Rows per page
+            <select
+              value={pageSize}
+              onChange={e => setPageSize(Number(e.target.value))}>
+              {pageIntervals.map(pageSize => (
+                <option key={pageSize} value={pageSize}>
+                  {pageSize}
+                </option>
+              ))}
+            </select>
+          </li>
+          <Pagination.First onClick={() => gotoPage(0)} disabled={!canPreviousPage} />
+          <Pagination.Prev onClick={() => previousPage()} disabled={!canPreviousPage} />
+          <li className="pagination-count-items">
+            {rowsCount} of {rows.length} items
+          </li>
+          <Pagination.Next onClick={() => nextPage()} disabled={!canNextPage} />
+          <Pagination.Last onClick={() => gotoPage(pageCount - 1)} disabled={!canNextPage} />
+        </Pagination>
+      )}
     </TableWrapper>
   )
 }
