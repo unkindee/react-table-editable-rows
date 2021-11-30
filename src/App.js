@@ -9,6 +9,7 @@ const App = () => {
     {
       Header: 'id',
       accessor: 'id',
+
       Cell: tableProps => {
         const index = Number(tableProps.row.id) + 1
         return <span>{index}</span>

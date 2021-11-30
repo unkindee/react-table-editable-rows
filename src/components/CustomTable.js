@@ -4,9 +4,13 @@ import { isObject } from 'lodash'
 import { Formik, Form, useField, useFormikContext } from 'formik'
 import Select from 'react-select'
 import NumberFormat from 'react-number-format'
-import { useTable } from 'react-table'
+import { useTable, useSortBy } from 'react-table'
 import { TABLE_ACTIONS } from './constants'
 import { checkItem } from './helpers'
+
+import { ReactComponent as Sort } from '../assets/icons/sort.svg'
+import { ReactComponent as SortUp } from '../assets/icons/sort_up.svg'
+import { ReactComponent as SortDown } from '../assets/icons/sort_down.svg'
 
 const TableWrapper = styled.div`
   margin: 40px;
@@ -77,7 +81,7 @@ const TableWrapper = styled.div`
     .table-container>.item-container:first-child .attribute {
         display: flex;
         align-items: center;
-        justify-content: flex-start;
+        justify-content: space-between;
         text-overflow: initial;
         overflow: auto;
         white-space: normal;
@@ -123,6 +127,10 @@ const TableWrapper = styled.div`
   .header-format {
     position: relative;
     font-weight: bold;
+
+    span {
+      display: flex;
+    }
   }
 
   .header-format,
@@ -474,7 +482,9 @@ const CustomTable = ({
     columns,
     data: tableRows,
     defaultColumn
-  })
+  },
+    useSortBy
+  )
 
   // Render the UI for your table
   return (
@@ -489,8 +499,17 @@ const CustomTable = ({
         {headerGroups.map((headerGroup, i) => (
           <li className='item item-container' {...headerGroup.getHeaderGroupProps()} style={{ gridTemplateColumns: size }}>
             {headerGroup.headers.map((column, i) => (
-              <div key={i} className='attribute header-format' {...column.getHeaderProps}>
-                {column.render('Header')}
+              <div key={i} className='attribute header-format' {...column.getHeaderProps(column.getSortByToggleProps())}>
+                <span>{column.render('Header')}</span>
+                {!column.disableSortBy && (
+                  <span>
+                    {column.isSorted
+                      ? column.isSortedDesc
+                        ? <SortDown />
+                        : <SortUp />
+                      : <Sort />}
+                  </span>
+                )}
               </div>
             ))}
           </li>
