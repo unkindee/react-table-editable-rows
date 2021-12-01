@@ -16,11 +16,10 @@ const App = () => {
       }
     },
     {
-      Header: 'Item description',
-      accessor: 'item_description',
-      component: 'input',
-      componentType: 'text',
-      componentPlaceholder: 'Click to edit this line'
+      Header: 'Date',
+      accessor: 'date',
+      component: 'date',
+      componentPlaceholder: 'No date selected'
     },
     {
       Header: 'Cost Type',
