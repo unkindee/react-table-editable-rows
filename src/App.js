@@ -57,7 +57,7 @@ const App = () => {
   ]
 
   //user for external add new row
-  const [ data, setTableData ] = useState(null)
+  const [ newData, setTableData ] = useState(null)
 
   //used for external search filter
   const [searchFilter, setSearchFilter] = useState('')
@@ -66,9 +66,9 @@ const App = () => {
     <>
       <button
         onClick={() => setTableData(createNewRow(MOCK_TABLE_DATA, TABLE_COLUMNS))}
-        disabled={usePrevious(MOCK_TABLE_DATA.length) !== usePrevious(data?.length)}
+        disabled={usePrevious(MOCK_TABLE_DATA.length) !== usePrevious(newData?.length)}
       >
-        Add row external
+        Add new line
       </button>
       <input
         type='text'
@@ -81,11 +81,15 @@ const App = () => {
         }}
       />
       <CustomTable
-        key={data}
+        key={newData}
         table_key='my_table'
         cols={TABLE_COLUMNS}
-        data={data || MOCK_TABLE_DATA}
+        data={newData || MOCK_TABLE_DATA}
         show_actions={[TABLE_ACTIONS.edit, TABLE_ACTIONS.delete]}
+        Edit={() => <div>Edit</div>}
+        Delete={() => <div>Delete</div>}
+        Cancel={() => 'Cancel'}
+        Submit={() => <div>Save</div>}
         size='.8fr 2.5fr 2.5fr 2fr 2fr 2fr 2.5fr'
         searchFilter={searchFilter}
         showPagination

@@ -175,9 +175,16 @@ const TableWrapper = styled.div`
 
 const ActionItem = styled.button`
   cursor: pointer;
+  background: none;
+  border: none;
 
   &:hover {
     color: #2081FA;
+  }
+
+  &:disabled:hover {
+    color: gray;
+    cursor: not-allowed;
   }
 `
 
@@ -405,6 +412,10 @@ const defaultColumn = {
 export const rowActions = (
   _data,
   show_actions,
+  Edit,
+  Delete,
+  Cancel,
+  Submit,
   activeRowId,
   revertRowChanges,
   setActiveRowId,
@@ -417,56 +428,49 @@ export const rowActions = (
 
     Cell: (tableProps) => {
       const originalId = tableProps.row.index
-      const actionStyle = { opacity: activeRowId !== null && originalId !== activeRowId ? '.5' : '1' }
+      const disabled = activeRowId !== null && originalId !== activeRowId
 
       return (
         <>
           {originalId === activeRowId ? (
             <>
-              <ActionItem type="submit">submit</ActionItem>
+              <ActionItem type="submit">
+                {Submit ? <Submit /> : 'submit' }
+              </ActionItem>
               <ActionItem
                 onMouseDown={() => {
                   revertRowChanges()
                   setActiveRowId(null)
                 }}
               >
-                cancel
+                {Cancel ? <Cancel /> : 'cancel' }
               </ActionItem>
             </>
           ) : (
             <>
               {checkItem(show_actions, TABLE_ACTIONS.delete) && (
                 <ActionItem
-                  style={actionStyle}
-                  onClick={(e) => {
-                    if (activeRowId !== null && originalId !== activeRowId) {
-                      //disable delete if another row is active
-                      e.preventDefault()
-                      return false
-                    }
-                    console.log(table_key)
+                  type="button"
+                  disabled={disabled}
+                  onClick={() => {
+                    console.log('delete', table_key)
                   }}
                 >
-                  delete
+                  { Delete ? <Delete /> : 'delete' }
                 </ActionItem>
               )}
 
               {checkItem(show_actions, TABLE_ACTIONS.edit) && (
-                <ActionItem
-                  key={activeRowId}
-                  style={actionStyle}
-                  onClick={(e) => {
-                    if (activeRowId !== null && originalId !== activeRowId) {
-                      //disable edit if another row is active
-                      e.preventDefault()
-                      return false
-                    }
-                    setActiveRowId(originalId)
-                  }}
-                >
-                  edit
-                </ActionItem>
-              )}
+                  <ActionItem
+                    key={activeRowId}
+                    disabled={disabled}
+                    onClick={() => {
+                      setActiveRowId(originalId)
+                    }}
+                  >
+                    { Edit ? <Edit /> : 'edit' }
+                  </ActionItem>
+                )}
             </>
           )}
         </>
@@ -479,6 +483,10 @@ const CustomTable = ({
   cols,
   data,
   show_actions,
+  Edit,
+  Delete,
+  Cancel,
+  Submit,
   size,
   table_key,
   updateMyData,
@@ -501,12 +509,16 @@ const CustomTable = ({
     () => rowActions(
       data,
       show_actions,
+      Edit,
+      Delete,
+      Cancel,
+      Submit,
       activeRowId,
       revertRowChanges,
       setActiveRowId,
       table_key
     ),
-    [activeRowId, data, show_actions, revertRowChanges, table_key]
+    [activeRowId, data, show_actions, Edit, Delete, Cancel, Submit, revertRowChanges, table_key]
   )
   const showActions = show_actions && show_actions.length > 0
   const columns = useMemo(() => cols.concat(showActions ? actionsColumn : []), [cols, actionsColumn, showActions])
@@ -564,12 +576,12 @@ const CustomTable = ({
   // Render the UI for your table
   return (
     <TableWrapper>
-      <button
+      <ActionItem
         onClick={() => addRow(createNewRow(data, cols))}
-        disabled={(usePrevious(data.length) !== usePrevious(tableRows?.length)) || externalNewRow}
+        disabled={(usePrevious(data.length) !== usePrevious(tableRows?.length)) || externalNewRow || activeRowId !== null}
       >
         Add new line
-      </button>
+      </ActionItem>
       <ol className='table table-container' {...getTableProps()}>
         {headerGroups.map((headerGroup, i) => (
           <li className='item item-container' {...headerGroup.getHeaderGroupProps()} style={{ gridTemplateColumns: size }}>
