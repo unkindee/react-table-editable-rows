@@ -9,7 +9,7 @@ import DatePicker from "react-datepicker"
 import { useTable, useSortBy, usePagination, useGlobalFilter } from 'react-table'
 import { TABLE_ACTIONS } from './constants'
 import { checkItem } from './helpers'
-import "react-datepicker/dist/react-datepicker.css"
+import 'react-datepicker/dist/react-datepicker.css'
 
 import { ReactComponent as Sort } from '../assets/icons/sort.svg'
 import { ReactComponent as SortUp } from '../assets/icons/sort_up.svg'
@@ -532,9 +532,7 @@ const CustomTable = ({
     pageCount,
     setPageSize,
     prepareRow,
-    allColumns,
     setGlobalFilter,
-    getToggleHideAllColumnsProps,
   } = useTable({
     columns,
     data: tableRows,
