@@ -172,6 +172,15 @@ const TableWrapper = styled.div`
     }
   }
 `
+
+const ActionItem = styled.button`
+  cursor: pointer;
+
+  &:hover {
+    color: #2081FA;
+  }
+`
+
 const pageIntervals = [30]
 
 export const createNewRow = (data, cols) => {
@@ -200,14 +209,6 @@ export const usePrevious = (value) => {
   })
   return ref.current
 }
-
-const ActionItem = styled.button`
-  cursor: pointer;
-
-  &:hover {
-    color: #2081FA;
-  }
-`
 
 const customSelect = {
   container: (provided, state) => ({
@@ -276,10 +277,8 @@ const Datepicker = (props) => {
 
   return (
     <DatePicker
-      {...field}
-      {...props}
-      dateFormat='dd MMMM, yyyy'
       selected={field.value && new Date(field.value)}
+      dateFormat='dd MMMM, yyyy'
       onChange={date => setFieldValue(field.name, date)}
       disabled={disabled}
       placeholderText={placeholder}
