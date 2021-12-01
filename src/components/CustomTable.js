@@ -5,9 +5,11 @@ import { Formik, Form, useField, useFormikContext } from 'formik'
 import { Pagination } from 'react-bootstrap'
 import Select from 'react-select'
 import NumberFormat from 'react-number-format'
+import DatePicker from "react-datepicker"
 import { useTable, useSortBy, usePagination, useGlobalFilter } from 'react-table'
 import { TABLE_ACTIONS } from './constants'
 import { checkItem } from './helpers'
+import "react-datepicker/dist/react-datepicker.css"
 
 import { ReactComponent as Sort } from '../assets/icons/sort.svg'
 import { ReactComponent as SortUp } from '../assets/icons/sort_up.svg'
@@ -110,10 +112,6 @@ const TableWrapper = styled.div`
     &:focus-visible {
       outline: none;
     }
-
-    &::placeholder {
-      color: #2081FA;
-    }
   }
 
   .active-row-selection {
@@ -171,14 +169,6 @@ const TableWrapper = styled.div`
     .pagination-count-items {
       font-size: 12px;
       opacity: .5;
-    }
-  }
-
-  .columns-filter {
-    display: flex;
-
-    input {
-      height: 15px;
     }
   }
 `
@@ -279,34 +269,37 @@ const customSelect = {
 
 const StyledInput = styled.input``
 
-const CustomSelect = (props) => {
-  const selectRef = useRef()
+const Datepicker = (props) => {
   const { setFieldValue } = useFormikContext()
-  const { accessor, customOptions, initialValue, placeholder } = props
+  const [ field ] = useField(props)
+  const { disabled, placeholder } = props
 
-  const options = customOptions
+  return (
+    <DatePicker
+      {...field}
+      {...props}
+      dateFormat='dd MMMM, yyyy'
+      selected={field.value && new Date(field.value)}
+      onChange={date => setFieldValue(field.name, date)}
+      disabled={disabled}
+      placeholderText={placeholder}
+    />
+  )
+}
 
-  const onChange = option => {
-    setFieldValue(`data.${accessor}`, option?.id)
-    setSelectedOption([option])
-  }
-
-  const [selectedOption, setSelectedOption] = useState()
-
-  useEffect(() => {
-    const defaultOption = options?.filter(option => option.id === initialValue)
-    setSelectedOption(defaultOption)
-  }, [options, initialValue])
+const CustomSelect = (props) => {
+  const { setFieldValue } = useFormikContext()
+  const [ field ] = useField(props)
+  const { customOptions, placeholder } = props
 
   return (
     <Select
-      ref={selectRef}
-      onChange={option => onChange(option)}
-      options={options}
+      onChange={option => setFieldValue(field.name, option.id)}
+      options={customOptions}
       getOptionLabel={e => e.title}
       getOptionValue={e => e.id}
       isMulti={false}
-      value={selectedOption}
+      value={customOptions.filter(option => option.id === field.value)}
       components={{
         IndicatorSeparator: () => null,
         DropdownIndicator: () => null
@@ -320,13 +313,13 @@ const CustomSelect = (props) => {
 
 const Input = (props) => {
   const { setFieldValue } = useFormikContext()
-  const [field] = useField(props)
-  const { disabled, placeholder, name, initialValue, type, valuePrefix } = props
+  const [ field ] = useField(props)
+  const { disabled, placeholder, initialValue, type, valuePrefix } = props
   const { value } = field
 
   const handleOnKeyDown = (e) => {
     if (e.key === 'Escape') {
-      setFieldValue(name, initialValue)
+      setFieldValue(field.name, initialValue)
     }
   }
 
@@ -338,12 +331,11 @@ const Input = (props) => {
     return (
       <NumberFormat
         prefix={valuePrefix}
-        name={name}
         placeholder={placeholder}
         thousandSeparator
         value={isObject(value) ? value.formattedValue : value}
         onValueChange={val =>
-          setFieldValue(name, val.floatValue || defaultValues[name])
+          setFieldValue(field.name, val.floatValue || defaultValues[field.name])
         }
         onKeyDown={(e) => handleOnKeyDown(e)}
         disabled={disabled}
@@ -375,13 +367,10 @@ const EditableCell = ({
     case 'select':
       return (
         <CustomSelect
-          name="select"
-          accessor={id}
+          name={`data.${[id]}`}
           customOptions={props.cell.column.selectOptions}
           placeholder={componentPlaceholder}
           isDisabled={!disabled}
-          initialValue={initialValue}
-          key={!disabled}
         />
       )
     case 'input':
@@ -395,6 +384,14 @@ const EditableCell = ({
           valuePrefix={componentPrefix}
         />
       )
+    case 'date':
+      return (
+        <Datepicker
+          name={`data.${[id]}`}
+          placeholder={componentPlaceholder}
+          disabled={!disabled}
+        />
+      )
     default:
       return (
         <div>This custom component is not defined</div>
@@ -405,19 +402,6 @@ const EditableCell = ({
 const defaultColumn = {
   Cell: EditableCell,
 }
-
-const IndeterminateCheckbox = React.forwardRef(
-  ({ indeterminate, ...rest }, ref) => {
-    const defaultRef = React.useRef()
-    const resolvedRef = ref || defaultRef
-
-    React.useEffect(() => {
-      resolvedRef.current.indeterminate = indeterminate
-    }, [resolvedRef, indeterminate])
-
-    return <input type="checkbox" ref={resolvedRef} {...rest} />
-  }
-)
 
 export const rowActions = (
   _data,
@@ -583,21 +567,6 @@ const CustomTable = ({
   // Render the UI for your table
   return (
     <TableWrapper>
-      <div className="columns-filter">
-        <div>
-          <IndeterminateCheckbox {...getToggleHideAllColumnsProps()} />
-          Toggle All
-        </div>
-        {allColumns.map(column => (
-            <div key={column.id}>
-              <label>
-                <input type="checkbox" {...column.getToggleHiddenProps()} />{' '}
-                {column.Header}
-              </label>
-            </div>
-          ))}
-      </div>
-
       <button
         onClick={() => addRow(createNewRow(data, cols))}
         disabled={(usePrevious(data.length) !== usePrevious(tableRows?.length)) || externalNewRow}

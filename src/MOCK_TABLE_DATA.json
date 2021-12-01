@@ -1,7 +1,7 @@
 [
   {
       "id": 1,
-      "item_description": "Land",
+      "date": "",
       "cost_type": "",
       "value_no_vat": "10000000",
       "email": "test@atest.com",
@@ -9,7 +9,7 @@
   },
   {
       "id": 2,
-      "item_description": "Land",
+      "date": "2021-08-14T19:46:46",
       "cost_type": "soft",
       "value_no_vat": "1000000",
       "email": "test@atest.com",
@@ -17,7 +17,7 @@
   },
   {
       "id": 3,
-      "item_description": "Land",
+      "date": "February 28, 2018",
       "cost_type": "soft",
       "value_no_vat": "100000",
       "email": "test@atest.com",
@@ -25,7 +25,7 @@
   },
   {
       "id": 4,
-      "item_description": "Land",
+      "date": "February 28, 2018",
       "cost_type": "soft",
       "value_no_vat": "10000,",
       "email": "test@atest.com",
@@ -33,7 +33,7 @@
   },
   {
       "id": 5,
-      "item_description": "Land",
+      "date": "February 28, 2018",
       "cost_type": "soft",
       "value_no_vat": "10000",
       "email": "test@atest.com",
@@ -41,7 +41,7 @@
   },
   {
       "id": 6,
-      "item_description": "Land",
+      "date": "February 28, 2018",
       "cost_type": "soft",
       "value_no_vat": "100000",
       "email": "test@atest.com",
@@ -49,7 +49,7 @@
   },
   {
       "id": 7,
-      "item_description": "Land",
+      "date": "February 28, 2018",
       "cost_type": "soft",
       "value_no_vat": "10000000",
       "email": "test@atest.com",
@@ -57,7 +57,7 @@
   },
   {
       "id": 8,
-      "item_description": "Land",
+      "date": "February 28, 2018",
       "cost_type": "soft",
       "value_no_vat": "13400",
       "email": "test@atest.com",
@@ -65,7 +65,7 @@
   },
   {
       "id": 9,
-      "item_description": "Land",
+      "date": "February 28, 2018",
       "cost_type": "soft",
       "value_no_vat": "13400",
       "email": "test@atest.com",
@@ -73,7 +73,7 @@
   },
   {
       "id": 10,
-      "item_description": "Land",
+      "date": "February 28, 2018",
       "cost_type": "soft",
       "value_no_vat": "13400",
       "email": "test@atest.com",
@@ -81,7 +81,7 @@
   },
   {
       "id": 11,
-      "item_description": "Land",
+      "date": "February 28, 2018",
       "cost_type": "soft",
       "value_no_vat": "13400",
       "email": "test@atest.com",
@@ -89,7 +89,7 @@
   },
   {
       "id": 12,
-      "item_description": "Land",
+      "date": "February 28, 2018",
       "cost_type": "soft",
       "value_no_vat": "13400",
       "email": "test@atest.com",
@@ -97,7 +97,7 @@
   },
   {
       "id": 13,
-      "item_description": "Land",
+      "date": "February 28, 2018",
       "cost_type": "soft",
       "value_no_vat": "13400",
       "email": "test@atest.com",
@@ -105,7 +105,7 @@
   },
   {
       "id": 14,
-      "item_description": "Land",
+      "date": "February 28, 2018",
       "cost_type": "soft",
       "value_no_vat": "13400",
       "email": "test@atest.com",
@@ -113,7 +113,7 @@
   },
   {
       "id": 15,
-      "item_description": "Land",
+      "date": "February 28, 2018",
       "cost_type": "soft",
       "value_no_vat": "13400",
       "email": "test@atest.com",
@@ -121,7 +121,7 @@
   },
   {
       "id": 16,
-      "item_description": "Land",
+      "date": "February 28, 2018",
       "cost_type": "soft",
       "value_no_vat": "13400",
       "email": "test@atest.com",
@@ -129,15 +129,15 @@
   },
   {
       "id": 17,
-      "item_description": "Land",
-      "cost_type": "land",
+      "date": "February 28, 2018",
+      "cost_type": "February 28, 2018",
       "value_no_vat": "13400",
       "email": "test@atest.com",
       "country": "Indonesia"
   },
   {
       "id": 18,
-      "item_description": "Land",
+      "date": "February 28, 2018",
       "cost_type": "soft",
       "value_no_vat": "13400",
       "email": "test@atest.com",
@@ -145,7 +145,7 @@
   },
   {
       "id": 19,
-      "item_description": "Land",
+      "date": "February 28, 2018",
       "cost_type": "hard",
       "value_no_vat": "13400",
       "email": "test@atest.com",
@@ -153,7 +153,7 @@
   },
   {
       "id": 20,
-      "item_description": "Land",
+      "date": "February 28, 2018",
       "cost_type": "soft",
       "value_no_vat": "13400",
       "email": "test@atest.com",
