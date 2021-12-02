@@ -4,10 +4,14 @@ import styled from 'styled-components'
 import CustomTable, { createNewRow, usePrevious } from './components/CustomTable.js'
 import { TABLE_ACTIONS } from './components/constants'
 
+const Wrapper = styled.div`
+  margin: 40px;
+`
+
 const App = () => {
   const TABLE_COLUMNS = [
     {
-      Header: 'id',
+      Header: 'No.',
       accessor: 'id',
 
       Cell: tableProps => {
@@ -56,14 +60,22 @@ const App = () => {
     },
   ]
 
+  const saveRow = (data, key) => {
+    console.log(`save row`, data, key)
+  }
+
+  const deleteRow = (id, key) => {
+    console.log(`delete`, id, key)
+  }
+
   //user for external add new row
-  const [ newData, setTableData ] = useState(null)
+  const [newData, setTableData] = useState(null)
 
   //used for external search filter
   const [searchFilter, setSearchFilter] = useState('')
 
   return (
-    <>
+    <Wrapper>
       <input
         type='text'
         id='title'
@@ -80,6 +92,8 @@ const App = () => {
         cols={TABLE_COLUMNS}
         data={newData || MOCK_TABLE_DATA}
         show_actions={[TABLE_ACTIONS.edit, TABLE_ACTIONS.delete]}
+        saveRow={saveRow}
+        deleteRow={deleteRow}
         Edit={() => <div>Edit</div>}
         Delete={() => <div>Delete</div>}
         Cancel={() => 'Cancel'}
@@ -88,7 +102,7 @@ const App = () => {
         searchFilter={searchFilter}
         showPagination
       />
-    </>
+    </Wrapper>
   )
 }
 

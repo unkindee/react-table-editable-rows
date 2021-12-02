@@ -7,7 +7,7 @@ import Select from 'react-select'
 import NumberFormat from 'react-number-format'
 import DatePicker from "react-datepicker"
 import { useTable, useSortBy, usePagination, useGlobalFilter } from 'react-table'
-import { TABLE_ACTIONS } from './constants'
+import { TABLE_ACTIONS, TABLE_STYLE } from './constants'
 import { checkItem } from './helpers'
 import 'react-datepicker/dist/react-datepicker.css'
 
@@ -16,24 +16,23 @@ import { ReactComponent as SortUp } from '../assets/icons/sort_up.svg'
 import { ReactComponent as SortDown } from '../assets/icons/sort_down.svg'
 
 const TableWrapper = styled.div`
-  margin: 40px;
-
   ol.table {
+    font-family: ${TABLE_STYLE.font};
     margin: 0px;
     padding: 0px;
-    border-top: 1px solid #F0F2F3;
-    border-left: 1px solid #F0F2F3;
+    border-top: ${TABLE_STYLE.border};
+    border-left: ${TABLE_STYLE.border};
   }
 
   li {
     list-style: none;
-    font-size: 12px;
+    font-size: ${TABLE_STYLE.fontSize};
     position: relative;
   }
 
   .attribute {
-    border-right: 1px solid #F0F2F3;
-    border-bottom: 1px solid #F0F2F3;
+    border-right: ${TABLE_STYLE.border};
+    border-bottom: ${TABLE_STYLE.border};
     line-height: 2;
   }
 
@@ -57,7 +56,8 @@ const TableWrapper = styled.div`
     overflow: hidden;
     text-overflow: ellipsis;
     text-align: left;
-    font-size: 12px;
+    font-size: ${TABLE_STYLE.fontSize};
+    color: ${TABLE_STYLE.text}
 
     &:focus {
       border: none;
@@ -67,10 +67,20 @@ const TableWrapper = styled.div`
       outline: none;
     }
 
+    &:disabled {
+      color: ${TABLE_STYLE.disabledText};
+    }
+
     &::placeholder {
-      color: gray;
+      color: ${TABLE_STYLE.placeholder};
       opacity: .5;
-      font-family: tahoma;
+      font-family: ${TABLE_STYLE.font};
+    }
+  }
+
+  .active-row {
+    .cell-format:hover {
+      background: ${TABLE_STYLE.cellHover};
     }
   }
 
@@ -80,13 +90,7 @@ const TableWrapper = styled.div`
     bottom: 0;
     right: 0;
     left: 0;
-    border: 2px solid #2081FA;
-  }
-
-  .active-table-row {
-    .css-1sa7j44-singleValue {
-      color: #000000 !important;
-    }
+    border: ${TABLE_STYLE.activeBorder};
   }
 
   .header-format {
@@ -103,7 +107,7 @@ const TableWrapper = styled.div`
 
   .header-format,
   .cell-format {
-    padding: 12px;
+    padding: ${TABLE_STYLE.cellSpacing};
 
     .cell-wrapper {
       position: relative;
@@ -117,7 +121,7 @@ const TableWrapper = styled.div`
 
     .pagination-rows-per-page {
       margin-right: 150px;
-      font-size: 12px;
+      font-size: ${TABLE_STYLE.fontSize};
       opacity: .5;
 
       select {
@@ -140,7 +144,7 @@ const TableWrapper = styled.div`
     }
 
     .pagination-count-items {
-      font-size: 12px;
+      font-size: ${TABLE_STYLE.fontSize};
       opacity: .5;
     }
   }
@@ -159,11 +163,11 @@ const ActionItem = styled.button`
   border: none;
 
   &:hover {
-    color: #2081FA;
+    color: ${TABLE_STYLE.hover};
   }
 
   &:disabled:hover {
-    color: gray;
+    color: ${TABLE_STYLE.disabledText};
     cursor: not-allowed;
   }
 `
@@ -228,28 +232,28 @@ const customSelect = {
   }),
   option: (provided, state) => ({
     ...provided,
-    fontSize: '12px',
+    fontSize: TABLE_STYLE.fontSize,
     lineHeight: '24px',
     color: '#515058'
   }),
   singleValue: (provided, state) => ({
     ...provided,
-    fontSize: '12px',
-    color: '#515058',
+    fontSize: TABLE_STYLE.fontSize,
+    color: state.isDisabled ? TABLE_STYLE.disabledText : TABLE_STYLE.text,
   }),
   placeholder: (provided, state) => ({
     ...provided,
-    fontSize: '12px',
-    color: 'gray',
+    fontSize: TABLE_STYLE.fontSize,
+    color: TABLE_STYLE.placeholder,
     opacity: '.5',
     whiteSpace: 'nowrap',
     overflow: 'hidden',
     textOverflow: 'ellipsis',
-    fontFamily: 'tahoma',
+    fontFamily: TABLE_STYLE.font,
   }),
   menu: (provided, state) => ({
     ...provided,
-    top: '36px',
+    top: '34px',
     boxShadow: '0px 4px 4px rgba(0, 0, 0, 0.25)',
     borderRadius: '0 0 8px 8px',
     padding: 0,
@@ -406,6 +410,7 @@ export const rowActions = (
   activeRowId,
   revertRowChanges,
   setActiveRowId,
+  deleteRow,
   table_key
 ) => ([
   {
@@ -440,7 +445,7 @@ export const rowActions = (
                   type="button"
                   disabled={disabled}
                   onClick={() => {
-                    console.log('delete', table_key)
+                    deleteRow(originalId, table_key)
                   }}
                 >
                   {Delete ? <Delete /> : 'delete'}
@@ -470,6 +475,8 @@ const CustomTable = ({
   cols,
   data,
   show_actions,
+  saveRow,
+  deleteRow,
   Edit,
   Delete,
   Cancel,
@@ -503,9 +510,10 @@ const CustomTable = ({
       activeRowId,
       revertRowChanges,
       setActiveRowId,
+      deleteRow,
       table_key
     ),
-    [activeRowId, data, show_actions, Edit, Delete, Cancel, Submit, revertRowChanges, table_key]
+    [activeRowId, data, show_actions, Edit, Delete, Cancel, Submit, revertRowChanges, deleteRow, table_key]
   )
   const showActions = show_actions && show_actions.length > 0
   const columns = useMemo(() => cols.concat(showActions ? actionsColumn : []), [cols, actionsColumn, showActions])
@@ -599,7 +607,7 @@ const CustomTable = ({
           return (
             <li
               style={size}
-              className={activeRow ? 'active-table-row' : ''}
+              className={activeRow ? 'active-row' : ''}
               {...row.getRowProps()}
             >
               {activeRow && (
@@ -612,7 +620,7 @@ const CustomTable = ({
                   data: row.original
                 }}
                 onSubmit={async (values) => {
-                  console.log(values, table_key)
+                  saveRow(values, table_key)
                 }}
               >
                 <Form
