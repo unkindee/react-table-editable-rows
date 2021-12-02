@@ -98,7 +98,7 @@ const App = () => {
         Delete={() => <div>Delete</div>}
         Cancel={() => 'Cancel'}
         Submit={() => <div>Save</div>}
-        size={{ gridTemplateColumns: 'minmax(60px, .8fr) minmax(100px, 1fr) minmax(100px, 1fr) minmax(100px, 1fr) minmax(100px, 1fr) minmax(100px, 1fr) minmax(80px, 1fr)' }}
+        size={{ gridTemplateColumns: 'minmax(60px, .8fr) minmax(80px, 1fr) minmax(80px, 1fr) minmax(80px, 1fr) minmax(80px, 1fr) minmax(80px, 1fr) minmax(80px, 1fr)' }}
         searchFilter={searchFilter}
         showPagination
       />
