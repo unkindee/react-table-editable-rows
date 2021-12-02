@@ -25,7 +25,7 @@ const App = () => {
       Header: 'Cost Type',
       accessor: 'cost_type',
       component: 'select',
-      componentPlaceholder: 'No selection',
+      componentPlaceholder: 'No cost selected',
       selectOptions: [
         { id: 'soft', title: 'Soft Cost' },
         { id: 'land', title: 'Land Cost' },
@@ -64,12 +64,6 @@ const App = () => {
 
   return (
     <>
-      <button
-        onClick={() => setTableData(createNewRow(MOCK_TABLE_DATA, TABLE_COLUMNS))}
-        disabled={usePrevious(MOCK_TABLE_DATA.length) !== usePrevious(newData?.length)}
-      >
-        Add new line
-      </button>
       <input
         type='text'
         id='title'
@@ -90,7 +84,7 @@ const App = () => {
         Delete={() => <div>Delete</div>}
         Cancel={() => 'Cancel'}
         Submit={() => <div>Save</div>}
-        size='.8fr 2.5fr 2.5fr 2fr 2fr 2fr 2.5fr'
+        size={{ gridTemplateColumns: 'minmax(60px, .8fr) minmax(100px, 1fr) minmax(100px, 1fr) minmax(100px, 1fr) minmax(100px, 1fr) minmax(100px, 1fr) minmax(80px, 1fr)' }}
         searchFilter={searchFilter}
         showPagination
       />

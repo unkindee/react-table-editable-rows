@@ -17,11 +17,12 @@ import { ReactComponent as SortDown } from '../assets/icons/sort_down.svg'
 
 const TableWrapper = styled.div`
   margin: 40px;
-  height: 100%;
 
   ol.table {
     margin: 0px;
     padding: 0px;
+    border-top: 1px solid #F0F2F3;
+    border-left: 1px solid #F0F2F3;
   }
 
   li {
@@ -30,65 +31,17 @@ const TableWrapper = styled.div`
     position: relative;
   }
 
-  * {
-      box-sizing: border-box;
-  }
-
   .attribute {
+    border-right: 1px solid #F0F2F3;
+    border-bottom: 1px solid #F0F2F3;
     line-height: 2;
   }
 
-  /* 2 Column Card Layout */
-  @media screen and (max-width: 736px) {
-
-    /* Don't display the first item, since it is used to display the header for tabular layouts*/
-    .table-container>li:first-child {
-      display: none;
-    }
-
-    /* Attribute name for first column, and attribute value for second column. */
-    .attribute {
-      display: grid;
-      grid-template-columns: minmax(9em, 30%) 1fr;
-    }
-  }
-
-  /* 1 Column Card Layout */
-  @media screen and (max-width:580px) {
-    .table-container {
-      display: grid;
-      grid-template-columns: 1fr;
-    }
-  }
-
-  /* Tabular Layout */
-  @media screen and (min-width: 737px) {
-    /* The maximum column width, that can wrap */
-    .item-container, form {
-      display: grid;
-      grid-template-columns: repeat( auto-fit, minmax(50px, 1fr) );
-    }
-
-    .table {
-      border-top: 1px solid #F0F2F3;
-      border-left: 1px solid #F0F2F3;
-    }
-
-    /* In order to maximize row lines, only display one line for a cell */
-    .attribute {
-        border-right: 1px solid #F0F2F3;
-        border-bottom: 1px solid #F0F2F3;
-    }
-
-    /* Center header labels */
-    .table-container>.item-container:first-child .attribute {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        text-overflow: initial;
-        overflow: auto;
-        white-space: normal;
-    }
+  .item-container,
+  form {
+    display: grid;
+    grid-auto-flow: column;
+    grid-template-columns: repeat( auto-fit, minmax(50px, 1fr) );
   }
 
   form {
@@ -104,6 +57,7 @@ const TableWrapper = styled.div`
     overflow: hidden;
     text-overflow: ellipsis;
     text-align: left;
+    font-size: 12px;
 
     &:focus {
       border: none;
@@ -111,6 +65,12 @@ const TableWrapper = styled.div`
   
     &:focus-visible {
       outline: none;
+    }
+
+    &::placeholder {
+      color: gray;
+      opacity: .5;
+      font-family: tahoma;
     }
   }
 
@@ -126,6 +86,9 @@ const TableWrapper = styled.div`
   .header-format {
     position: relative;
     font-weight: bold;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 
     span {
       display: flex;
@@ -135,6 +98,10 @@ const TableWrapper = styled.div`
   .header-format,
   .cell-format {
     padding: 12px;
+
+    .cell-wrapper {
+      position: relative;
+    }
   }
 
   .pagination {
@@ -169,6 +136,13 @@ const TableWrapper = styled.div`
     .pagination-count-items {
       font-size: 12px;
       opacity: .5;
+    }
+  }
+
+  .buttons {
+    button {
+      margin-bottom: 20px;
+      border: 1px solid gray;
     }
   }
 `
@@ -259,6 +233,13 @@ const customSelect = {
   }),
   placeholder: (provided, state) => ({
     ...provided,
+    fontSize: '12px',
+    color: 'gray',
+    opacity: '.5',
+    whiteSpace: 'nowrap',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    fontFamily: 'tahoma',
   }),
   menu: (provided, state) => ({
     ...provided,
@@ -279,7 +260,7 @@ const StyledInput = styled.input``
 
 const Datepicker = (props) => {
   const { setFieldValue } = useFormikContext()
-  const [ field ] = useField(props)
+  const [field] = useField(props)
   const { disabled, placeholder } = props
 
   return (
@@ -295,7 +276,7 @@ const Datepicker = (props) => {
 
 const CustomSelect = (props) => {
   const { setFieldValue } = useFormikContext()
-  const [ field ] = useField(props)
+  const [field] = useField(props)
   const { customOptions, placeholder } = props
 
   return (
@@ -319,7 +300,7 @@ const CustomSelect = (props) => {
 
 const Input = (props) => {
   const { setFieldValue } = useFormikContext()
-  const [ field ] = useField(props)
+  const [field] = useField(props)
   const { disabled, placeholder, initialValue, type, valuePrefix } = props
   const { value } = field
 
@@ -435,7 +416,7 @@ export const rowActions = (
           {originalId === activeRowId ? (
             <>
               <ActionItem type="submit">
-                {Submit ? <Submit /> : 'submit' }
+                {Submit ? <Submit /> : 'submit'}
               </ActionItem>
               <ActionItem
                 onMouseDown={() => {
@@ -443,7 +424,7 @@ export const rowActions = (
                   setActiveRowId(null)
                 }}
               >
-                {Cancel ? <Cancel /> : 'cancel' }
+                {Cancel ? <Cancel /> : 'cancel'}
               </ActionItem>
             </>
           ) : (
@@ -456,21 +437,21 @@ export const rowActions = (
                     console.log('delete', table_key)
                   }}
                 >
-                  { Delete ? <Delete /> : 'delete' }
+                  {Delete ? <Delete /> : 'delete'}
                 </ActionItem>
               )}
 
               {checkItem(show_actions, TABLE_ACTIONS.edit) && (
-                  <ActionItem
-                    key={activeRowId}
-                    disabled={disabled}
-                    onClick={() => {
-                      setActiveRowId(originalId)
-                    }}
-                  >
-                    { Edit ? <Edit /> : 'edit' }
-                  </ActionItem>
-                )}
+                <ActionItem
+                  key={activeRowId}
+                  disabled={disabled}
+                  onClick={() => {
+                    setActiveRowId(originalId)
+                  }}
+                >
+                  {Edit ? <Edit /> : 'edit'}
+                </ActionItem>
+              )}
             </>
           )}
         </>
@@ -576,15 +557,18 @@ const CustomTable = ({
   // Render the UI for your table
   return (
     <TableWrapper>
-      <ActionItem
-        onClick={() => addRow(createNewRow(data, cols))}
-        disabled={(usePrevious(data.length) !== usePrevious(tableRows?.length)) || externalNewRow || activeRowId !== null}
-      >
-        Add new line
-      </ActionItem>
+      <div className="buttons">
+        <ActionItem
+          onClick={() => addRow(createNewRow(data, cols))}
+          disabled={(usePrevious(data.length) !== usePrevious(tableRows?.length)) || externalNewRow || activeRowId !== null}
+        >
+          Add new line +
+        </ActionItem>
+      </div>
+
       <ol className='table table-container' {...getTableProps()}>
         {headerGroups.map((headerGroup, i) => (
-          <li className='item item-container' {...headerGroup.getHeaderGroupProps()} style={{ gridTemplateColumns: size }}>
+          <li className='item item-container' {...headerGroup.getHeaderGroupProps()} style={size}>
             {headerGroup.headers.map((column, i) => (
               <div key={i} className='attribute header-format' {...column.getHeaderProps(column.getSortByToggleProps())}>
                 <span>{column.render('Header')}</span>
@@ -608,7 +592,7 @@ const CustomTable = ({
 
           return (
             <li
-              style={{ gridTemplateColumns: size }}
+              style={size}
               className={activeRow ? 'active-table-row' : ''}
               {...row.getRowProps()}
             >
@@ -626,11 +610,11 @@ const CustomTable = ({
                 }}
               >
                 <Form
-                  style={{ gridTemplateColumns: size }}
+                  style={size}
                 >
                   {row.cells.map(cell => (
                     <div className='attribute cell-format' {...cell.getCellProps()}>
-                      <div style={{ position: 'relative ' }}>
+                      <div className="cell-wrapper">
                         {cell.render('Cell', { disabled: activeRow })}
                       </div>
                     </div>
