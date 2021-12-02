@@ -83,6 +83,12 @@ const TableWrapper = styled.div`
     border: 2px solid #2081FA;
   }
 
+  .active-table-row {
+    .css-1sa7j44-singleValue {
+      color: #000000 !important;
+    }
+  }
+
   .header-format {
     position: relative;
     font-weight: bold;
