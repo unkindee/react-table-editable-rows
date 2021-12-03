@@ -1,14 +1,25 @@
 import React, { useState } from 'react'
-import MOCK_TABLE_DATA from './MOCK_TABLE_DATA.json'
+import { useQuery } from 'react-query'
 import styled from 'styled-components'
 import CustomTable, { createNewRow, usePrevious } from './components/CustomTable.js'
 import { TABLE_ACTIONS } from './components/constants'
+import axios from 'axios'
 
 const Wrapper = styled.div`
   margin: 40px;
 `
 
+const dataUrl = 'http://localhost:4000/data'
+const fetchData = () => {
+  return axios.get(dataUrl)
+}
+
 const App = () => {
+  const { isLoading, data, isError, error } = useQuery(
+    'data',
+    fetchData
+  )
+
   const TABLE_COLUMNS = [
     {
       Header: 'No.',
@@ -74,34 +85,44 @@ const App = () => {
   //used for external search filter
   const [searchFilter, setSearchFilter] = useState('')
 
+  if (isError) {
+    return <h2>{error.message}</h2>
+  }
+
   return (
     <Wrapper>
-      <input
-        type='text'
-        id='title'
-        required
-        placeholder='Search'
-        value={searchFilter || ''}
-        onChange={e => {
-          setSearchFilter(e.target.value)
-        }}
-      />
-      <CustomTable
-        key={newData}
-        table_key='my_table'
-        cols={TABLE_COLUMNS}
-        data={newData || MOCK_TABLE_DATA}
-        show_actions={[TABLE_ACTIONS.edit, TABLE_ACTIONS.delete]}
-        saveRow={saveRow}
-        deleteRow={deleteRow}
-        Edit={() => <div>Edit</div>}
-        Delete={() => <div>Delete</div>}
-        Cancel={() => 'Cancel'}
-        Submit={() => <div>Save</div>}
-        size={{ gridTemplateColumns: 'minmax(60px, .8fr) minmax(80px, 1fr) minmax(80px, 1fr) minmax(80px, 1fr) minmax(80px, 1fr) minmax(80px, 1fr) minmax(80px, 1fr)' }}
-        searchFilter={searchFilter}
-        showPagination
-      />
+      {isLoading ? (
+        <div>loading</div>
+      ) : (
+        <>
+          <input
+            type='text'
+            id='title'
+            required
+            placeholder='Search'
+            value={searchFilter || ''}
+            onChange={e => {
+              setSearchFilter(e.target.value)
+            }}
+          />
+          <CustomTable
+            key={newData}
+            table_key='my_table'
+            cols={TABLE_COLUMNS}
+            data={newData || data.data}
+            show_actions={[TABLE_ACTIONS.edit, TABLE_ACTIONS.delete]}
+            saveRow={saveRow}
+            deleteRow={deleteRow}
+            Edit={() => <div>Edit</div>}
+            Delete={() => <div>Delete</div>}
+            Cancel={() => 'Cancel'}
+            Submit={() => <div>Save</div>}
+            size={{ gridTemplateColumns: 'minmax(60px, .8fr) minmax(80px, 1fr) minmax(80px, 1fr) minmax(80px, 1fr) minmax(80px, 1fr) minmax(80px, 1fr) minmax(80px, 1fr)' }}
+            searchFilter={searchFilter}
+            showPagination
+          />
+        </>
+      )}
     </Wrapper>
   )
 }

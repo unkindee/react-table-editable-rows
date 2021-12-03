@@ -7,13 +7,16 @@
     "@testing-library/jest-dom": "^5.15.1",
     "@testing-library/react": "^11.2.7",
     "@testing-library/user-event": "^12.8.3",
+    "axios": "^0.24.0",
     "formik": "^2.2.9",
+    "json-server": "^0.17.0",
     "lodash": "^4.17.21",
     "react": "^17.0.2",
     "react-bootstrap": "^2.0.2",
     "react-datepicker": "^4.4.0",
     "react-dom": "^17.0.2",
     "react-number-format": "^4.8.0",
+    "react-query": "^3.34.0",
     "react-scripts": "4.0.3",
     "react-select": "^5.2.1",
     "react-table": "^7.7.0",
@@ -24,7 +27,8 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "serve-json": "json-server --watch db.json --delay 100 --port 4000"
   },
   "eslintConfig": {
     "extends": [
