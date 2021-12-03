@@ -1,14 +1,9 @@
-# Getting Started with Create React App
+A simple component based on the react-table library.
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
-First npm install and after npm start
+Editable row:
+![react-table](https://user-images.githubusercontent.com/20815213/144584200-2c061475-c25a-456f-8986-7c00e39cda3e.gif)
 
-## Dependencies
-this uses several packages
-  - react-table
-  - styled-components
-  - formik
-  - lodash
 
-![react-table](https://user-images.githubusercontent.com/20815213/143881863-d69ec21b-e7ab-40b7-8712-05fe4a72b037.gif)
+New row:
+![react-table-new-row](https://user-images.githubusercontent.com/20815213/144584206-57d4b648-cc8c-462c-811c-8b3d3080f092.gif)
