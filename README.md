@@ -1,4 +1,4 @@
-A React Table component built with css GRID. https://react-table.tanstack.com
+An editable React Table component built with css GRID. https://react-table.tanstack.com
 
 Features:
  - editable row with revert changes
