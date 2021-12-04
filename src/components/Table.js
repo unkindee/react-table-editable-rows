@@ -1,11 +1,5 @@
 import React, { useState } from 'react'
-import {
-  BrowserRouter,
-  Routes,
-  Route
-} from 'react-router-dom'
 import styled from 'styled-components'
-import { Link } from 'react-router-dom'
 import CustomTable from './CustomTable.js'
 import { useTableData } from './queryHooks.js'
 
@@ -21,7 +15,7 @@ const Table = () => {
     //console.log('onError', error)
   }
 
-  const { isLoading, isFetching, data, isError, error } = useTableData({ onSuccess, onError })
+  const { isLoading, isFetching, data, isError, error } = useTableData({ onSuccess, onError, enabled: true })
 
   const TABLE_COLUMNS = [
     {
@@ -98,14 +92,6 @@ const Table = () => {
         <div>loading</div>
       ) : (
         <>
-          <ol>
-            {data.map(item => (
-              <li key={item.id}>
-                <Link to={`/table/${item.id}`}>{item.country}</Link>
-              </li>
-            ))}
-          </ol>
-
           <input
             type='text'
             id='title'
