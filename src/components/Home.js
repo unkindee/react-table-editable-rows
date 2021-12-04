@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 import { useCountryData, useTableData } from './queryHooks.js'
 
 const Home = () => {
-  const [ key, setKey ] = useState()
+  const [ key, setKey ] = useState(null)
   const onSuccess = (data) => {
     //console.log('onSuccess', data)
   }
