@@ -1,129 +1,29 @@
-import React, { useState } from 'react'
-import { useQuery } from 'react-query'
-import styled from 'styled-components'
-import CustomTable, { createNewRow, usePrevious } from './components/CustomTable.js'
-import { TABLE_ACTIONS } from './components/constants'
-import axios from 'axios'
-
-const Wrapper = styled.div`
-  margin: 40px;
-`
-
-const dataUrl = 'http://localhost:4000/data'
-const fetchData = () => {
-  return axios.get(dataUrl)
-}
+import React from 'react'
+import {
+  BrowserRouter,
+  Routes,
+  Route
+} from 'react-router-dom'
+import { NavLink } from 'react-router-dom'
+import Home from './components/Home'
+import Table from './components/Table'
+import TableActions from './components/TableActions'
 
 const App = () => {
-  const { isLoading, data, isError, error } = useQuery(
-    'data',
-    fetchData
-  )
-
-  const TABLE_COLUMNS = [
-    {
-      Header: 'No.',
-      accessor: 'id',
-
-      Cell: tableProps => {
-        const index = Number(tableProps.row.id) + 1
-        return <span>{index}</span>
-      }
-    },
-    {
-      Header: 'Date',
-      accessor: 'date',
-      component: 'date',
-      componentPlaceholder: 'No date selected'
-    },
-    {
-      Header: 'Cost Type',
-      accessor: 'cost_type',
-      component: 'select',
-      componentPlaceholder: 'No cost selected',
-      selectOptions: [
-        { id: 'soft', title: 'Soft Cost' },
-        { id: 'land', title: 'Land Cost' },
-        { id: 'hard', title: "Hard Cost" },
-      ],
-    },
-    {
-      Header: 'Value without VAT',
-      accessor: 'value_no_vat',
-      component: 'input',
-      componentType: 'number',
-      componentPrefix: '$ ',
-      componentPlaceholder: 'Click to edit this line'
-    },
-    {
-      Header: 'Email',
-      accessor: 'email',
-      component: 'input',
-      componentType: 'email',
-      componentPlaceholder: 'Email address'
-    },
-    {
-      Header: 'Country',
-      accessor: 'country',
-      component: 'input',
-      componentType: 'text',
-      componentPlaceholder: 'Click to edit this line'
-    },
-  ]
-
-  const saveRow = (data, key) => {
-    console.log(`save row`, data, key)
-  }
-
-  const deleteRow = (id, key) => {
-    console.log(`delete`, id, key)
-  }
-
-  //user for external add new row
-  const [newData, setTableData] = useState(null)
-
-  //used for external search filter
-  const [searchFilter, setSearchFilter] = useState('')
-
-  if (isError) {
-    return <h2>{error.message}</h2>
-  }
 
   return (
-    <Wrapper>
-      {isLoading ? (
-        <div>loading</div>
-      ) : (
-        <>
-          <input
-            type='text'
-            id='title'
-            required
-            placeholder='Search'
-            value={searchFilter || ''}
-            onChange={e => {
-              setSearchFilter(e.target.value)
-            }}
-          />
-          <CustomTable
-            key={newData}
-            table_key='my_table'
-            cols={TABLE_COLUMNS}
-            data={newData || data.data}
-            show_actions={[TABLE_ACTIONS.edit, TABLE_ACTIONS.delete]}
-            saveRow={saveRow}
-            deleteRow={deleteRow}
-            Edit={() => <div>Edit</div>}
-            Delete={() => <div>Delete</div>}
-            Cancel={() => 'Cancel'}
-            Submit={() => <div>Save</div>}
-            size={{ gridTemplateColumns: 'minmax(60px, .8fr) minmax(80px, 1fr) minmax(80px, 1fr) minmax(80px, 1fr) minmax(80px, 1fr) minmax(80px, 1fr) minmax(80px, 1fr)' }}
-            searchFilter={searchFilter}
-            showPagination
-          />
-        </>
-      )}
-    </Wrapper>
+    <BrowserRouter>
+      <div>
+        <NavLink to="/">Home</NavLink> |{' '}
+        <NavLink to="table">Table</NavLink> |{' '}
+        <NavLink to="table-actions">TableActions</NavLink>
+      </div>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="table" element={<Table />} />
+        <Route path="table-actions" element={<TableActions />} />
+      </Routes>
+    </BrowserRouter>
   )
 }
 
