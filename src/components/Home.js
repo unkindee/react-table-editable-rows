@@ -14,7 +14,6 @@ const Home = () => {
   const { isLoading, isFetching, data, isError, error } = useTableData({ onSuccess, onError })
 
   const { isLoading: loadingDetails, data: details, refetch } = useCountryData({ tableId: 1 })
-  console.log('details: ', details);
 
   if (isLoading || isFetching) {
     <div>Loading...</div>
