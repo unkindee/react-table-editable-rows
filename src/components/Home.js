@@ -1,8 +1,9 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useCountryData, useTableData } from './queryHooks.js'
 
 const Home = () => {
+  const [ key, setKey ] = useState()
   const onSuccess = (data) => {
     //console.log('onSuccess', data)
   }
@@ -13,9 +14,9 @@ const Home = () => {
 
   const { isLoading, isFetching, data, isError, error } = useTableData({ onSuccess, onError })
 
-  const { isLoading: loadingDetails, data: details, refetch } = useCountryData({ tableId: 1 })
+  const { isLoading: loadingDetails, data: details } = useCountryData({ tableId: key})
 
-  if (isLoading || isFetching) {
+  if (isLoading || isFetching || loadingDetails) {
     <div>Loading...</div>
   }
 
@@ -33,12 +34,11 @@ const Home = () => {
       </div>
       <div>
         {data?.map(item => (
-          <button onClick={() => refetch(item.id)} key={item.id}>{item.country}</button>
+          <button onClick={() => setKey(item.id)} key={item.id}>{item.country}</button>
         ))}
-      </div>
-      <div>
-        {details?.id}
-        {details?.email}
+        <div>
+          {details?.id}{details?.email}
+        </div>
       </div>
     </>
   )

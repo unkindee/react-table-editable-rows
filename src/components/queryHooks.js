@@ -41,7 +41,7 @@ export const useCountryData = (props) => {
   const { tableId } = props
 
   return useQuery(['country', tableId], fetchCountryDetails, {
-    enabled: false,
+    enabled: !!tableId,
     staleTime: 5000,
     select: data => data.data
   })
