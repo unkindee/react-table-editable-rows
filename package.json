@@ -29,8 +29,8 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "serve-json": "json-server --watch table.json --delay 100 --port 4000",
-    "serve-json-actions": "json-server --watch table-actions.json --delay 100 --port 4001"
+    "serve-json": "json-server --watch table.json --delay 1000 --port 4000",
+    "serve-json-actions": "json-server --watch table-actions.json --delay 1000 --port 4001"
   },
   "eslintConfig": {
     "extends": [

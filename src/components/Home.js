@@ -16,8 +16,8 @@ const Home = () => {
 
   const { isLoading: loadingDetails, data: details } = useCountryData({ tableId: key})
 
-  if (isLoading || isFetching || loadingDetails) {
-    <div>Loading...</div>
+  if (isLoading || isFetching) {
+    return <div>Loading...</div>
   }
 
   return (
@@ -36,9 +36,13 @@ const Home = () => {
         {data?.map(item => (
           <button onClick={() => setKey(item.id)} key={item.id}>{item.country}</button>
         ))}
-        <div>
-          {details?.id}{details?.email}
-        </div>
+        {loadingDetails ? (
+          <div>loading....</div>
+        ) : (
+          <div>
+            {details?.id}{details?.email}
+          </div>
+        )}
       </div>
     </>
   )

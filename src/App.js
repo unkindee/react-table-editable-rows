@@ -16,7 +16,7 @@ const TableId = () => {
   const { isLoading, isFetching, data, isError, error } = useCountryData({ tableId })
 
   if (isLoading || isFetching) {
-    <div>Loading...</div>
+    return <div>Loading...</div>
   }
 
   return (
