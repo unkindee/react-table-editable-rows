@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { useQuery } from 'react-query'
+import { useQuery, useQueryClient } from 'react-query'
 
 const rootUrl = 'http://localhost:4000'
 
@@ -35,4 +35,18 @@ export const useTableActionsData = (props) => {
       select: data => data.data
     }
   )
+}
+
+const fetchCountryDetails = ({ queryKey }) => {
+  const id = queryKey[1]
+  return axios.get(rootUrl + '/data/'+id)
+}
+
+export const useCountryData = (props) => {
+  const { tableId } = props
+
+  return useQuery(['country', tableId], fetchCountryDetails, {
+    staleTime: 5000,
+    select: data => data.data
+  })
 }
