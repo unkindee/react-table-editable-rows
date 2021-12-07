@@ -1,0 +1,28 @@
+{
+  "data": [
+    {
+        "id": 1,
+        "date": "",
+        "cost_type": "",
+        "value_no_vat": "10000000",
+        "email": "test@atest.com",
+        "country": "Argentina"
+    },
+    {
+        "id": 2,
+        "date": "2021-08-14T19:46:46",
+        "cost_type": "soft",
+        "value_no_vat": "1000000",
+        "email": "test@atest.com",
+        "country": "Greece"
+    },
+    {
+        "id": 3,
+        "date": "2020-09-16T19:46:46",
+        "cost_type": "soft",
+        "value_no_vat": "100000",
+        "email": "test@atest.com",
+        "country": "Czech Republic"
+    }
+  ]
+}
